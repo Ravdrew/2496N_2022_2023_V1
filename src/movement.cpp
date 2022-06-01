@@ -20,65 +20,16 @@
 
 #define COUNT_CONST 25 //23
 
-//bool autonOn;
-
 float start_heading;
 
 void chas_move(int left_power, int right_power){
 	leftFront.move(left_power);
-	leftMid.move(left_power);
 	leftBack.move(left_power);
 	rightFront.move(right_power);
-	rightMid.move(right_power);
 	rightBack.move(right_power);
 }
 
-bool openStick;
-bool openChain;
-bool openJS;
-bool openHood;
-
-void chainClawOpen(){
-	chainClaw.set_value(true);
-    openChain = true;
-}
-
-void chainClawClose(){
-	chainClaw.set_value(false);
-    openChain = false;
-}
-
-void jsClawOpen(){
-	jSClamp.set_value(true);
-    openJS = true;
-}
-
-void jsClawClose(){
-	jSClamp.set_value(false);
-    openJS = false;
-}
-
-void stickUp(){
-	stick.set_value(false);
-    openStick = false;
-}
-
-void stickDown(){
-	stick.set_value(true);
-    openStick = true;
-}
-
-void hoodOpen(){
-	hood.set_value(true);
-    openHood = true;
-}
-
-void hoodClose(){
-	hood.set_value(false);
-    openHood = true;
-}
-
-void quickie(int target, bool claw){
+void quickie(float target){
     PID quickPID(QUICK_KP, QUICK_KI, QUICK_KD);
 
     float voltage;
@@ -109,7 +60,7 @@ void quickie(int target, bool claw){
 
         //std::abs(voltage) > power_cap ? voltage = power_cap*voltage/std::abs(voltage) : voltage = voltage;
         chas_move(voltage, voltage); // (voltage - heading, voltage + heading)
-        if (abs(target - encoder_average) <= 10) chainClawClose();
+    
         if (abs(target - encoder_average) <= 5) count++;
         if (count >= 5) break;
 
@@ -119,7 +70,7 @@ void quickie(int target, bool claw){
     chas_move(0,0);
 }
 
-void moveTimed(int target, int timer_amt){
+void moveTimed(float target, int timer_amt){
    PID absMove(TURN_KP, TURN_KI, TURN_KD);
   
    float voltage;
@@ -144,7 +95,7 @@ void moveTimed(int target, int timer_amt){
    printf("count: %d\r\n", (count));
 }
 
-void move(int target, bool ask_slew, int slew_rate, int power_cap, int active_cap){
+void move(float target, bool ask_slew, float slew_rate, float power_cap, float active_cap){
     PID straight(STRAIGHT_KP, STRAIGHT_KI, STRAIGHT_KD);
 
     float voltage;
@@ -189,252 +140,7 @@ void move(int target, bool ask_slew, int slew_rate, int power_cap, int active_ca
     chas_move(0,0);
 }
 
-void goalYoink(){
-    PID straight(STRAIGHT_KP, STRAIGHT_KI, STRAIGHT_KD);
-
-    float voltage;
-    float encoder_average;
-
-    float heading;
-    float imu_offset;
-    int count = 0;
-
-    reset_encoders();
-    imu_offset = imu.get_rotation();
-    
-    int target = 360;
-    stickDown();
-    while(true){
-
-        encoder_average = (leftBack.get_position() + rightBack.get_position())/2;
-        
-        voltage = straight.calc(target, encoder_average, STRAIGHT_INTEGRAL_KICK_IN, STRAIGHT_MAX_INTEGRAL, 0, false);
-
-        if(abs(target - encoder_average) >= 120){
-            voltage = 127;
-        }
-        //std::abs(voltage) > power_cap ? voltage = power_cap*voltage/std::abs(voltage) : voltage = voltage;
-        heading = 0;
-
-        chas_move(voltage, voltage + heading); // (voltage - heading, voltage + heading)
-        if (abs(target - encoder_average) <= 80){
-            stickUp();
-        }
-        if (abs(target - encoder_average) <= 3) break;
-
-        pros::delay(10);
-    }
-
-    target = -500;
-    reset_encoders();
-    while(true){
-
-        encoder_average = (leftBack.get_position() + rightBack.get_position())/2;
-        
-        voltage = straight.calc(target, encoder_average, STRAIGHT_INTEGRAL_KICK_IN, STRAIGHT_MAX_INTEGRAL, 0, false);
-
-        if(abs(target - encoder_average) >= 300){
-            voltage = -127;
-        }
-
-        chas_move(voltage, voltage); // (voltage - heading, voltage + heading)
-        if(abs(target - encoder_average) <= 243) stickDown();
-        if(abs(target - encoder_average) <= 5) count++;
-        if (count >= 23){
-            break;
-        }
-
-        pros::delay(10);
-    }    
-    
-    chas_move(0,0);
-    stickUp();
-}
-
-void goalYoinkLeft(){
-    PID straight(STRAIGHT_KP, STRAIGHT_KI, STRAIGHT_KD);
-
-    float voltage;
-    float encoder_average;
-
-    float heading;
-    float imu_offset;
-    int count = 0;
-
-    reset_encoders();
-    imu_offset = imu.get_rotation();
-    
-    int target = 350;
-    stickDown();
-    while(true){
-
-        encoder_average = (leftBack.get_position() + rightBack.get_position())/2;
-        
-        voltage = straight.calc(target, encoder_average, STRAIGHT_INTEGRAL_KICK_IN, STRAIGHT_MAX_INTEGRAL, 0, false);
-
-        if(abs(target - encoder_average) >= 120){
-            voltage = 127;
-        }
-        //std::abs(voltage) > power_cap ? voltage = power_cap*voltage/std::abs(voltage) : voltage = voltage;
-        heading = 0;
-
-        chas_move(voltage, voltage + heading); // (voltage - heading, voltage + heading)
-        if (abs(target - encoder_average) <= 80){
-            stickUp();
-        }
-        if (abs(target - encoder_average) <= 3) break;
-
-        pros::delay(10);
-    }
-
-    target = -390;
-    reset_encoders();
-    while(true){
-
-        encoder_average = (leftBack.get_position() + rightBack.get_position())/2;
-        
-        voltage = straight.calc(target, encoder_average, STRAIGHT_INTEGRAL_KICK_IN, STRAIGHT_MAX_INTEGRAL, 0, false);
-
-        if(abs(target - encoder_average) >= 145){
-            voltage = -127;
-        }
-
-        chas_move(voltage, voltage); // (voltage - heading, voltage + heading)
-        if(abs(target - encoder_average) <= 278) stickDown();
-        if(abs(target - encoder_average) <= 5) count++;
-        if (count >= 23){
-            break;
-        }
-
-        pros::delay(10);
-    }    
-    
-    chas_move(0,0);
-    stickUp();
-}
-
-void goalYoinkMid(){
-    PID straight(STRAIGHT_KP, STRAIGHT_KI, STRAIGHT_KD);
-
-    float voltage;
-    float encoder_average;
-
-    float heading;
-    float imu_offset;
-    int count = 0;
-
-    reset_encoders();
-    imu_offset = imu.get_rotation();
-    
-    int target = 390;
-    stickDown();
-    while(true){
-
-        encoder_average = (leftBack.get_position() + rightBack.get_position())/2;
-        
-        voltage = straight.calc(target, encoder_average, STRAIGHT_INTEGRAL_KICK_IN, STRAIGHT_MAX_INTEGRAL, 0, false);
-
-        if(abs(target - encoder_average) >= 120){
-            voltage = 127;
-        }
-        //std::abs(voltage) > power_cap ? voltage = power_cap*voltage/std::abs(voltage) : voltage = voltage;
-        heading = 0;
-
-        chas_move(voltage, voltage + heading); // (voltage - heading, voltage + heading)
-        if (abs(target - encoder_average) <= 80){
-            stickUp();
-        }
-        if (abs(target - encoder_average) <= 3) break;
-
-        pros::delay(10);
-    }
-
-    target = -390;
-    reset_encoders();
-    while(true){
-
-        encoder_average = (leftBack.get_position() + rightBack.get_position())/2;
-        
-        voltage = straight.calc(target, encoder_average, STRAIGHT_INTEGRAL_KICK_IN, STRAIGHT_MAX_INTEGRAL, 0, false);
-
-        if(abs(target - encoder_average) >= 145){
-            voltage = -127;
-        }
-
-        chas_move(voltage, voltage); // (voltage - heading, voltage + heading)
-        if(abs(target - encoder_average) <= 278) stickDown();
-        if(abs(target - encoder_average) <= 5) count++;
-        if (count >= 23){
-            break;
-        }
-
-        pros::delay(10);
-    }    
-    
-    chas_move(0,0);
-    stickUp();
-}
-
-/*void goalYoink(int far){
-    stickDown();
-    PID yoink(1.2, 0.15, STRAIGHT_KD);
-
-    float voltage;
-    float encoder_average;
-
-    float imu_offset;
-    float heading;
-    float target;
-    bool stick_down = false;
-    reset_encoders();
-    imu_offset = imu.get_rotation();
-    
-    target = far;
-    while(true){ 
-        encoder_average = (leftBack.get_position() + rightBack.get_position())/2;
-        
-        /*(if(abs(target - encoder_average) >= 150){
-            voltage = 127;
-        }
-        if(abs(target - encoder_average) >= 100){
-            voltage = 80;
-        }
-        else{
-            voltage = 60;
-        }*/
-        /*voltage = yoink.calc(target, encoder_average, INTEGRAL_KICK_IN, MAX_INTEGRAL, 0, false);
-
-        heading = imu.get_rotation() - imu_offset;
-
-        chas_move(voltage - heading, voltage + heading); // (voltage - heading, voltage + heading)
-        if (abs(target - encoder_average) <= 3) stickUp();
-        if (abs(target - encoder_average) <= 3) break;
-
-        pros::delay(10);
-    }
-
-    reset_encoders();
-    while(true){ 
-        encoder_average = (leftBack.get_position() + rightBack.get_position())/2;
-        
-        voltage = yoink.calc(-120, encoder_average, INTEGRAL_KICK_IN, MAX_INTEGRAL, 0, false);
-        if (abs(-120 - encoder_average) <= 90){
-            voltage = -127;
-        }
-        
-
-        heading = imu.get_rotation() - imu_offset;
-
-        chas_move(voltage + heading, voltage - heading); // (voltage + heading, voltage - heading\)
-        if (abs(-120 - encoder_average) <= 60) stickDown();
-        if (abs(-120 - encoder_average) <= 3) break;
-
-        pros::delay(10);
-    }
-    chas_move(0,0);
-}*/
-
-void turn(float target, bool ask_slew, int slew_rate){
+void turn(float target, bool ask_slew, float slew_rate){
     PID rotate(TURN_KP, TURN_KI, TURN_KD);
 
     float voltage;
@@ -459,7 +165,9 @@ void turn(float target, bool ask_slew, int slew_rate){
     chas_move(0,0);
     printf("count: %d\r\n", (count));
 }
-void absturn(int abstarget, bool ask_slew, int slew_rate, int power_cap){
+
+
+void absturn(float abstarget, bool ask_slew, float slew_rate, float power_cap){
     PID absRotate(TURN_KP, TURN_KI, TURN_KD);
   
     float voltage;
@@ -492,7 +200,8 @@ void absturn(int abstarget, bool ask_slew, int slew_rate, int power_cap){
     printf("count: %d\r\n", (count));
 }
 
-void absturnTimed(int abstarget, int timer_amt, bool ask_slew, int slew_rate, int power_cap){
+
+void absturnTimed(float abstarget, float timer_amt, bool ask_slew, float slew_rate, float power_cap){
    PID absRotateTimed(TURN_KP, TURN_KI, TURN_KD);
   
    float voltage;
@@ -522,34 +231,5 @@ void absturnTimed(int abstarget, int timer_amt, bool ask_slew, int slew_rate, in
    }
    chas_move(0,0);
    printf("count: %d\r\n", (count));
-}
-
-/*bool chainGoalDetected(){
-    if(chainSense.get_value() < 2150) return true;
-    return false;
-}*/
-
-void moveTillChain(int speed, int timer){
-    chainClawOpen();
-    int count = 0;
-    chas_move(speed, speed);
-    while(count < timer){
-        ++count;
-        pros::delay(10);
-    }
-    chainClawClose();
-    chas_move(0,0);
-}
-
-void moveTillJS(int speed, int timer){
-    jsClawOpen();
-    int count = 0;
-    chas_move(speed, speed);
-    while(count < timer){
-        ++count;
-        pros::delay(10);
-    }
-    jsClawClose();
-    chas_move(0,0);
 }
 

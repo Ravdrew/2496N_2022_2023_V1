@@ -105,25 +105,6 @@ void competition_initialize() {
  * from where it left off.
  */
 
-/*void autonChainBr(void * param){
-	while(chainLimit.get_value() == 0){
-		chainBar.move(-127);
-	}
-	chainBar.tare_position();
-		
-	PID chainPID(CHAIN_KP, CHAIN_KI, CHAIN_KD);
-	float chain_voltage;
-
-	while(autonRunning){
-		chain_voltage = chainPID.calc(autoChainTarget, chainBar.get_position(), INTEGRAL_KICK_IN, MAX_INTEGRAL, 0, false);
-		chainBar.move(chain_voltage);
-
-		pros::delay(10);
-	}
-
-	chainBar.move(0);
-}*/
-
 
 
 void autonomous() {
@@ -179,10 +160,6 @@ void autonSelect(){
 }
 
 void opcontrol() {
-	chainBar.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	//pros::Task backDriver(backDriverPID);
-	//pros::Task chainDriver(chainDriverPID);
 	
 	while (true) {
 

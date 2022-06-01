@@ -6,10 +6,10 @@ public:
     float m_kp;
     float m_ki;
     float m_kd;
-    int error = 0;
-    int prev_error = 0;
-    int integral = 0;
-    int derivative = 0;
+    float error = 0;
+    float prev_error = 0;
+    float integral = 0;
+    float derivative = 0;
     float power = 0;
     float prev_power = 0;
 
@@ -25,7 +25,7 @@ public:
         m_kd = kd;
     }
 
-    float calc (float target, float input, int integralKI, int maxI, int slew, bool slewq){ 
+    float calc (float target, float input, float integralKI, float maxI, float slew, bool slewq){ 
         prev_power = power;
         prev_error = error;
         error = target - input;
