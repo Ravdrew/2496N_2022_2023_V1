@@ -14,7 +14,7 @@
 
 #define STRAIGHT_INTEGRAL_KICK_IN 50
 #define STRAIGHT_MAX_INTEGRAL 100
-
+//Gerald was here wassup guys another year on this team lmao//
 #define TURN_INTEGRAL_KICK_IN 9
 #define TURN_MAX_INTEGRAL 127
 
@@ -31,7 +31,7 @@ void chas_move(int left_power, int right_power){
 
 void quickie(float target){
     PID quickPID(QUICK_KP, QUICK_KI, QUICK_KD);
-
+//wazzzzzzzaaaappppp how is it going lads
     float voltage;
     float encoder_average;
 
@@ -69,7 +69,7 @@ void quickie(float target){
     
     chas_move(0,0);
 }
-
+//beep boop beep boop
 void moveTimed(float target, int timer_amt){
    PID absMove(TURN_KP, TURN_KI, TURN_KD);
   
@@ -94,7 +94,7 @@ void moveTimed(float target, int timer_amt){
    chas_move(0,0);
    printf("count: %d\r\n", (count));
 }
-
+//somos en el nave con el impostor 
 void move(float target, bool ask_slew, float slew_rate, float power_cap, float active_cap){
     PID straight(STRAIGHT_KP, STRAIGHT_KI, STRAIGHT_KD);
 
@@ -139,7 +139,7 @@ void move(float target, bool ask_slew, float slew_rate, float power_cap, float a
     
     chas_move(0,0);
 }
-
+//*skull emoji
 void turn(float target, bool ask_slew, float slew_rate){
     PID rotate(TURN_KP, TURN_KI, TURN_KD);
 
@@ -166,7 +166,7 @@ void turn(float target, bool ask_slew, float slew_rate){
     printf("count: %d\r\n", (count));
 }
 
-
+//void dn{}
 void absturn(float abstarget, bool ask_slew, float slew_rate, float power_cap){
     PID absRotate(TURN_KP, TURN_KI, TURN_KD);
   
@@ -200,7 +200,7 @@ void absturn(float abstarget, bool ask_slew, float slew_rate, float power_cap){
     printf("count: %d\r\n", (count));
 }
 
-
+//who asked lol
 void absturnTimed(float abstarget, float timer_amt, bool ask_slew, float slew_rate, float power_cap){
    PID absRotateTimed(TURN_KP, TURN_KI, TURN_KD);
   

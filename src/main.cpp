@@ -2,6 +2,7 @@
 #include "robot.h"
 #include "movement.h"
 #include "PID.h"
+#include <cmath>
 
 
 /**
@@ -159,16 +160,50 @@ void autonSelect(){
 	timer++;*/
 }
 
+int sgn(double input){
+	return input/abs(input);
+}
+
 void opcontrol() {
-	
+	leftFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	leftBack.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	rightFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	rightBack.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+
+	int curve = 0;
 	while (true) {
 
-		int lPwr, rPwr;
-		int rYaxis, lXaxis;
+		if(controller.get_digital(DIGITAL_R1)){
+			intake.move(127);
+		}
+		else if(controller.get_digital(DIGITAL_R2)){
+			intake.move(-127);
+		}
+		else{
+			intake.brake();
+		}
+		
+		if(controller.get_digital_new_press(DIGITAL_X)) curve = 0;
+		if(controller.get_digital_new_press(DIGITAL_A)) curve = 1;
+		if(controller.get_digital_new_press(DIGITAL_B)) curve = 2;
+
+		float lPwr, rPwr;
+		float rYaxis, lYaxis;
 		rYaxis = controller.get_analog(ANALOG_RIGHT_Y);
-		lXaxis = controller.get_analog(ANALOG_LEFT_Y);
-		rPwr = (abs(rYaxis) > 2) ? rYaxis : 0;
-		lPwr = (abs(lXaxis) > 2) ? lXaxis : 0;  
+		lYaxis = controller.get_analog(ANALOG_LEFT_Y);
+		if(curve == 0){
+			rPwr = (abs(rYaxis) > 2) ? (127*sgn(rYaxis)*(-1*cos(M_PI/254*rYaxis)+1)) : 0;
+			lPwr = (abs(lYaxis) > 2) ? (127*sgn(lYaxis)*(-1*cos(M_PI/254*lYaxis)+1)) : 0;
+		}
+		if(curve == 1){
+			rPwr = (abs(rYaxis) > 2) ? (sgn(rYaxis) * (1.2*pow(1.03566426, sgn(rYaxis)*rYaxis) - 1.2 + sgn(rYaxis)*0.2*rYaxis)) : 0;
+			lPwr = (abs(lYaxis) > 2) ? (sgn(lYaxis) * (1.2*pow(1.03566426, sgn(lYaxis)*lYaxis) - 1.2 + sgn(lYaxis)*0.2*lYaxis)) : 0;
+		}
+		if(curve == 2){
+			rPwr = (abs(rYaxis) > 2) ? rYaxis : 0;
+			lPwr = (abs(lYaxis) > 2) ? lYaxis : 0;
+		}
 		chas_move(lPwr, rPwr);
 
 		pros::delay(20);
