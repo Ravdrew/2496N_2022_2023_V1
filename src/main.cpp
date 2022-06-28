@@ -190,27 +190,19 @@ void opcontrol() {
 			intake.move(0);
 		}
 
-		/*//Flywheel Toggle
-		if (controller.get_digital(DIGITAL_L1)){
-			toggle = !toggle;
-		}
-		if(toggle == true){ // Flywheel spins 
-			intake.move(127);
-		}
-		else{
-			intake.move(0);
-		} */
-		if (!(count % 25)){
+		
+		// Flywheel Toggle
+		if (!(count % 25)){ //Printing average RPMS on to the screen
 			controller.print(1,0,"Fly RPM: %f\n     ", (leftFlywheel.get_actual_velocity() + rightFlywheel.get_actual_velocity())/2);
 		}
 			count++;
 			pros::delay(2);
-		if (controller.get_digital(DIGITAL_L1)){
+		if (controller.get_digital(DIGITAL_L1)){ //Spin up
 			leftFlywheel.move(-127);
 			rightFlywheel.move(-127);
 			
 		}
-		else if (controller.get_digital(DIGITAL_L2)) {
+		else if (controller.get_digital(DIGITAL_L2)) { //Spin down
 			leftFlywheel.brake();
 			rightFlywheel.brake();
 		}
@@ -300,4 +292,16 @@ void opcontrol() {
 			intake.move(0);
 		}
 	} */
+
+	/*//Flywheel Toggle
+		if (controller.get_digital(DIGITAL_L1)){
+			toggle = !toggle;
+		}
+		if(toggle == true){ // Flywheel spins 
+			intake.move(127);
+		}
+		else{
+			intake.move(0);
+		} */
+
 }
