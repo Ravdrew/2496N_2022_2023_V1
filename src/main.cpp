@@ -3,6 +3,7 @@
 #include "movement.h"
 #include "PID.h"
 #include <cmath>
+#define OPTICAL_PORT 1
 
 
 /**
@@ -28,10 +29,10 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
+	// pros::lcd::initialize();
+	// pros::lcd::set_text(1, "Hello PROS User!");
 
-	pros::lcd::register_btn1_cb(on_center_button);
+	// pros::lcd::register_btn1_cb(on_center_button);
 }
 
 /**
@@ -170,10 +171,52 @@ void opcontrol() {
 	rightFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	rightBack.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	leftFlywheel.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	rightFlywheel.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	
+	bool toggle = true;
+	pros::Optical optical_sensor(4);
 
 	int curve = 0;
+	int count = 0;
 	while (true) {
 
+		//Optical Sensor Stuff
+		int hue_value = optical_sensor.get_hue(); 
+		if (hue_value <= 30 || hue_value >= 330){  
+			intake.move(127);
+		}
+		else{
+			intake.move(0);
+		}
+
+		/*//Flywheel Toggle
+		if (controller.get_digital(DIGITAL_L1)){
+			toggle = !toggle;
+		}
+		if(toggle == true){ // Flywheel spins 
+			intake.move(127);
+		}
+		else{
+			intake.move(0);
+		} */
+		if (!(count % 25)){
+			controller.print(1,0,"Fly RPM: %f\n     ", (leftFlywheel.get_actual_velocity() + rightFlywheel.get_actual_velocity())/2);
+		}
+			count++;
+			pros::delay(2);
+		if (controller.get_digital(DIGITAL_L1)){
+			leftFlywheel.move(-127);
+			rightFlywheel.move(-127);
+			
+		}
+		else if (controller.get_digital(DIGITAL_L2)) {
+			leftFlywheel.brake();
+			rightFlywheel.brake();
+		}
+
+
+		//Intakes
 		if(controller.get_digital(DIGITAL_R1)){
 			intake.move(127);
 		}
@@ -184,6 +227,7 @@ void opcontrol() {
 			intake.brake();
 		}
 		
+		//Driver Curves
 		if(controller.get_digital_new_press(DIGITAL_X)) curve = 0;
 		if(controller.get_digital_new_press(DIGITAL_A)) curve = 1;
 		if(controller.get_digital_new_press(DIGITAL_B)) curve = 2;
@@ -205,7 +249,55 @@ void opcontrol() {
 			lPwr = (abs(lYaxis) > 2) ? lYaxis : 0;
 		}
 		chas_move(lPwr, rPwr);
+	
 
 		pros::delay(20);
 	}
+
+	/*
+	Basically increase / decrease if pressed over time
+	int v=0; 
+	int valueAdd = 10;
+	int rpmCap = 600;
+	while(true){ 
+
+		if controller.get_digital(DIGITAL_L1){
+			v += valueAdd;
+		}
+		else if controller.get_digital(DIGITAL_L2){
+			v -= valueAdd;
+		}
+
+		if (v < 0) v = 0;
+		if (v <)
+	} */
+
+	/*
+	int = 0;
+	while(true){
+		
+		if controller.get_digital(DIGITAL_L1){
+			if int = 0{
+				int  = 1;
+				vex::task::sleep(100)
+			}
+			else if int = 1{
+				int = 0;
+			}
+		}
+		if int = 1{
+			
+		}
+	}*/
+
+/*
+	int hue_value = optical_sensor.get_hue();
+	if (controller.get_digital(DIGITAL_L1)){
+		if (hue_value <= 30 || hue_value >= 330){
+			intake.move(127);
+		} 
+		else{
+			intake.move(0);
+		}
+	} */
 }

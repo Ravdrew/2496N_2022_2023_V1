@@ -11,6 +11,8 @@ extern pros::Motor rightMid;
 extern pros::Motor rightBack;
 extern pros::Motor chainBar;
 extern pros::Motor intake;
+extern pros::Motor leftFlywheel; //4
+extern pros::Motor rightFlywheel; //10
 
 extern pros::Imu imu;
 extern pros::ADIDigitalOut chainClaw;
