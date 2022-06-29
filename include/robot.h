@@ -14,6 +14,10 @@ extern pros::Motor intake;
 extern pros::Motor leftFlywheel; //4
 extern pros::Motor rightFlywheel; //10
 
+extern pros::ADIEncoder leftE;
+extern pros::ADIEncoder rightE;
+extern pros::ADIEncoder midE;
+
 extern pros::Imu imu;
 extern pros::ADIDigitalOut chainClaw;
 extern pros::ADIDigitalOut jSClamp;
