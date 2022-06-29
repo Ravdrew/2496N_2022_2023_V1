@@ -179,17 +179,11 @@ void opcontrol() {
 
 	int curve = 0;
 	int count = 0;
+	bool intake_forward = false;
+	bool intake_reverse = false;
 	while (true) {
 
-		//Optical Sensor Stuff
-		int hue_value = optical_sensor.get_hue(); 
-		if (hue_value <= 30 || hue_value >= 330){  
-			intake.move(127);
-		}
-		else{
-			intake.move(0);
-		}
-
+		
 		
 		// Flywheel Toggle
 		if (!(count % 25)){ //Printing average RPMS on to the screen
@@ -206,19 +200,31 @@ void opcontrol() {
 			leftFlywheel.brake();
 			rightFlywheel.brake();
 		}
-
-
-		//Intakes
+		
+		//Forward intake toggle
 		if(controller.get_digital(DIGITAL_R1)){
+			intake_forward = !intake_forward;
+			pros::delay(200);
+		}
+		if(intake_forward == true){
 			intake.move(127);
 		}
-		else if(controller.get_digital(DIGITAL_R2)){
-			intake.move(-127);
-		}
-		else{
+		else if(intake_forward == false){
 			intake.brake();
 		}
-		
+
+		/* Reverse Intake toggle: Note that as of 6/28 it does not work when both forward and reverse functions are present.
+		if(controller.get_digital(DIGITAL_R2)){
+			intake_reverse = !intake_reverse;
+			pros::delay(200);
+		}
+		if(intake_reverse == true){
+			intake.move(-127);
+		}
+		else if(intake_reverse == false){
+			intake.brake();
+		} */
+
 		//Driver Curves
 		if(controller.get_digital_new_press(DIGITAL_X)) curve = 0;
 		if(controller.get_digital_new_press(DIGITAL_A)) curve = 1;
@@ -304,4 +310,25 @@ void opcontrol() {
 			intake.move(0);
 		} */
 
+		//Intakes
+		/*if(controller.get_digital(DIGITAL_R1) && (intake_stop = false)){
+			intake.move(127);
+			intake_stop = !intake_stop;
+		}
+		if(controller.get_digital(DIGITAL_R1) && (intake_stop = true)){
+			intake_stop = !intake_stop;
+			intake.brake();
+		}
+		*/
+
+		/*
+		//Optical Sensor Stuff
+		int hue_value = optical_sensor.get_hue(); 
+		if (hue_value <= 30 || hue_value >= 330){  
+			intake.move(127);
+		}
+		else{
+			intake.move(0);
+		}
+		*/
 }
