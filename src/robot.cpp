@@ -11,6 +11,10 @@ pros::Motor leftFlywheel(4, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::Motor rightFlywheel(10, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 
 
+pros::ADIEncoder leftE (1, 2);
+pros::ADIEncoder rightE (3, 4);
+pros::ADIEncoder midE (5, 6);
+
 pros::Imu imu(8);
 
 void reset_encoders(){

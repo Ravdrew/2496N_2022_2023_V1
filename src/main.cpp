@@ -202,14 +202,13 @@ void opcontrol() {
 		}
 		
 		//Forward intake toggle
-		if(controller.get_digital(DIGITAL_R1)){
+		if(controller.get_digital_new_press(DIGITAL_R1)){
 			intake_forward = !intake_forward;
-			pros::delay(200);
 		}
 		if(intake_forward == true){
 			intake.move(127);
 		}
-		else if(intake_forward == false){
+		else{
 			intake.brake();
 		}
 
