@@ -3,6 +3,7 @@
 #include "movement.h"
 #include "PID.h"
 #include "flywheel.h"
+#include "odometry.h"
 #include <cmath>
 #define OPTICAL_PORT 1
 
@@ -183,11 +184,12 @@ void opcontrol() {
 		
 		
 		// Flywheel Toggle
-		if (!(count % 25)){ //Printing average RPMS on to the screen
-			controller.print(1,0,"Fly RPM: %f\n     ", (leftFlywheel.get_actual_velocity() + rightFlywheel.get_actual_velocity())/2);
+		if (!(count % 2)){ //Printing average RPMS on to the screen
+			//controller.print(1,0,"Fly RPM: %f\n     ", (leftFlywheel.get_actual_velocity() + rightFlywheel.get_actual_velocity())/2);
+			callibration();
 		}
-			count++;
-			pros::delay(2);
+		count++;
+		
 		if (controller.get_digital(DIGITAL_L1)){ //Spin up
 			leftFlywheel.move(-127);
 			rightFlywheel.move(-127);
@@ -245,7 +247,7 @@ void opcontrol() {
 		chas_move(lPwr, rPwr);
 	
 
-		pros::delay(20);
+		pros::delay(25);
 	}
 
 	/*
