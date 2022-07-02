@@ -2,6 +2,7 @@
 #include "robot.h"
 #include "movement.h"
 #include "PID.h"
+#include "flywheel.h"
 #include <cmath>
 #define OPTICAL_PORT 1
 
@@ -159,10 +160,6 @@ void autonSelect(){
 		else if(selectedAuto == 7) controller.set_text(1, 0, "No Auton");
 	}
 	timer++;*/
-}
-
-int sgn(double input){
-	return input/abs(input);
 }
 
 void opcontrol() {
