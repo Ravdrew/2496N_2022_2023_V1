@@ -179,15 +179,15 @@ void opcontrol() {
 
 	int curve = 0;
 	int count = 0;
-	bool intake_forward = false;
-	bool intake_reverse = false;
+	bool intake_power = false;
+	int intake_direction = 1;
 	while (true) {
 
 		
 		
 		// Flywheel Toggle
 		if (!(count % 25)){ //Printing average RPMS on to the screen
-			controller.print(1,0,"Fly RPM: %f\n     ", (leftFlywheel.get_actual_velocity() + rightFlywheel.get_actual_velocity())/2);
+			controller.print(1,0,"Fly RPM: %f\n     ", leftFlywheel.get_actual_velocity());
 		}
 			count++;
 			pros::delay(2);
@@ -201,28 +201,20 @@ void opcontrol() {
 			rightFlywheel.brake();
 		}
 		
-		//Forward intake toggle
+		//Full intake code
 		if(controller.get_digital_new_press(DIGITAL_R1)){
-			intake_forward = !intake_forward;
+			intake_power = !intake_power;
 		}
-		if(intake_forward == true){
-			intake.move(127);
+		if(intake_power == true){
+			intake.move(127*intake_direction); //Toggle Direction
 		}
-		else{
+		else {
 			intake.brake();
 		}
 
-		/* Reverse Intake toggle: Note that as of 6/28 it does not work when both forward and reverse functions are present.
-		if(controller.get_digital(DIGITAL_R2)){
-			intake_reverse = !intake_reverse;
-			pros::delay(200);
+		if(controller.get_digital_new_press(DIGITAL_R2)){
+			intake_direction = (-1 * intake_direction);
 		}
-		if(intake_reverse == true){
-			intake.move(-127);
-		}
-		else if(intake_reverse == false){
-			intake.brake();
-		} */
 
 		//Driver Curves
 		if(controller.get_digital_new_press(DIGITAL_X)) curve = 0;
