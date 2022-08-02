@@ -22,7 +22,7 @@ void changeTBHTarget(float speed){
 }
 
 void takeBackHalf(){
-    tbh_curr_speed = (leftFlywheel.get_actual_velocity() + rightFlywheel.get_actual_velocity())/2;
+    tbh_curr_speed = (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2;
 
     tbh_error = tbh_target - tbh_curr_speed;
     tbh_output += TBH_GAIN * tbh_error;
@@ -32,6 +32,6 @@ void takeBackHalf(){
     }
     tbh_prev_error = tbh_error;
 
-    leftFlywheel.move(tbh_output);
-    rightFlywheel.move(tbh_output);
+    midFlywheel.move(tbh_output);
+    outFlywheel.move(tbh_output);
 }

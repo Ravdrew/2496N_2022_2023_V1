@@ -11,8 +11,8 @@ extern pros::Motor rightMid;
 extern pros::Motor rightBack;
 extern pros::Motor chainBar;
 extern pros::Motor intake;
-extern pros::Motor leftFlywheel; //4
-extern pros::Motor rightFlywheel; //10
+extern pros::Motor midFlywheel; //4
+extern pros::Motor outFlywheel; //10
 
 extern pros::ADIEncoder leftE;
 extern pros::ADIEncoder rightE;

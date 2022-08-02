@@ -2,6 +2,7 @@
 #include "robot.h"
 #include "movement.h"
 #include "PID.h"
+#include "flywheel.h"
 #include <cmath>
 #define OPTICAL_PORT 1
 
@@ -161,105 +162,70 @@ void autonSelect(){
 	timer++;*/
 }
 
-int sgn(double input){
-	return input/abs(input);
-}
-
 void opcontrol() {
+	controller.clear();
 	leftFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	leftBack.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	rightFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	rightBack.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	leftFlywheel.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	rightFlywheel.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-	
-	bool toggle = true;
-	pros::Optical optical_sensor(4);
+	outFlywheel.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	midFlywheel.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 
-	int curve = 0;
 	int count = 0;
 	bool intake_power = false;
 	int intake_direction = 1;
 	while (true) {
 
 		
-		
 		// Flywheel Toggle
 		if (!(count % 25)){ //Printing average RPMS on to the screen
-			controller.print(1,0,"Fly RPM: %f\n     ", leftFlywheel.get_actual_velocity());
+			controller.print(1,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
 		}
 			count++;
 			pros::delay(2);
 		if (controller.get_digital(DIGITAL_L1)){ //Spin up
-			leftFlywheel.move(-127);
-			rightFlywheel.move(-127);
+			outFlywheel.move(127);
+			midFlywheel.move(127);
 			
 		}
 		else if (controller.get_digital(DIGITAL_L2)) { //Spin down
-			leftFlywheel.brake();
-			rightFlywheel.brake();
+			outFlywheel.brake();
+			midFlywheel.brake();
 		}
 		
 		//Full intake code
 		if(controller.get_digital_new_press(DIGITAL_R1)){
 			intake_power = !intake_power;
 		}
-		if(intake_power == true){
+
+		if(controller.get_digital_new_press(DIGITAL_A)){
+			intake_direction = intake_direction * -1;
+		}
+
+		if(intake_power){
 			intake.move(127*intake_direction); //Toggle Direction
 		}
 		else {
 			intake.brake();
 		}
 
-		if(controller.get_digital_new_press(DIGITAL_R2)){
-			intake_direction = (-1 * intake_direction);
-		}
 
 		//Driver Curves
-		if(controller.get_digital_new_press(DIGITAL_X)) curve = 0;
-		if(controller.get_digital_new_press(DIGITAL_A)) curve = 1;
-		if(controller.get_digital_new_press(DIGITAL_B)) curve = 2;
 
 		float lPwr, rPwr;
 		float rYaxis, lYaxis;
 		rYaxis = controller.get_analog(ANALOG_RIGHT_Y);
 		lYaxis = controller.get_analog(ANALOG_LEFT_Y);
-		if(curve == 0){
-			rPwr = (abs(rYaxis) > 2) ? (127*sgn(rYaxis)*(-1*cos(M_PI/254*rYaxis)+1)) : 0;
-			lPwr = (abs(lYaxis) > 2) ? (127*sgn(lYaxis)*(-1*cos(M_PI/254*lYaxis)+1)) : 0;
-		}
-		if(curve == 1){
-			rPwr = (abs(rYaxis) > 2) ? (sgn(rYaxis) * (1.2*pow(1.03566426, sgn(rYaxis)*rYaxis) - 1.2 + sgn(rYaxis)*0.2*rYaxis)) : 0;
-			lPwr = (abs(lYaxis) > 2) ? (sgn(lYaxis) * (1.2*pow(1.03566426, sgn(lYaxis)*lYaxis) - 1.2 + sgn(lYaxis)*0.2*lYaxis)) : 0;
-		}
-		if(curve == 2){
-			rPwr = (abs(rYaxis) > 2) ? rYaxis : 0;
-			lPwr = (abs(lYaxis) > 2) ? lYaxis : 0;
-		}
+		
+		rPwr = (abs(rYaxis) > 2) ? (sgn(rYaxis) * (1.2*pow(1.03566426, sgn(rYaxis)*rYaxis) - 1.2 + sgn(rYaxis)*0.2*rYaxis)) : 0;
+		lPwr = (abs(lYaxis) > 2) ? (sgn(lYaxis) * (1.2*pow(1.03566426, sgn(lYaxis)*lYaxis) - 1.2 + sgn(lYaxis)*0.2*lYaxis)) : 0;
+		
 		chas_move(lPwr, rPwr);
 	
 
 		pros::delay(20);
 	}
-
-	/*
-	Basically increase / decrease if pressed over time
-	int v=0; 
-	int valueAdd = 10;
-	int rpmCap = 600;
-	while(true){ 
-
-		if controller.get_digital(DIGITAL_L1){
-			v += valueAdd;
-		}
-		else if controller.get_digital(DIGITAL_L2){
-			v -= valueAdd;
-		}
-
-		if (v < 0) v = 0;
-		if (v <)
-	} */
 
 	/*
 	int = 0;
@@ -289,28 +255,6 @@ void opcontrol() {
 			intake.move(0);
 		}
 	} */
-
-	/*//Flywheel Toggle
-		if (controller.get_digital(DIGITAL_L1)){
-			toggle = !toggle;
-		}
-		if(toggle == true){ // Flywheel spins 
-			intake.move(127);
-		}
-		else{
-			intake.move(0);
-		} */
-
-		//Intakes
-		/*if(controller.get_digital(DIGITAL_R1) && (intake_stop = false)){
-			intake.move(127);
-			intake_stop = !intake_stop;
-		}
-		if(controller.get_digital(DIGITAL_R1) && (intake_stop = true)){
-			intake_stop = !intake_stop;
-			intake.brake();
-		}
-		*/
 
 		/*
 		//Optical Sensor Stuff
