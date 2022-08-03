@@ -180,7 +180,7 @@ void opcontrol() {
 		
 		// Flywheel Toggle
 		if (!(count % 25)){ //Printing average RPMS on to the screen
-			controller.print(1,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
+			controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
 		}
 			count++;
 			pros::delay(2);
@@ -195,11 +195,15 @@ void opcontrol() {
 		}
 		
 		//Full intake code
+		if(!(count % 25)){
+			controller.print(2,0, "Intake: %f ", intake.get_actual_velocity());
+		}
+
 		if(controller.get_digital_new_press(DIGITAL_R1)){
 			intake_power = !intake_power;
 		}
 
-		if(controller.get_digital_new_press(DIGITAL_A)){
+		if(controller.get_digital_new_press(DIGITAL_R2)){
 			intake_direction = intake_direction * -1;
 		}
 
