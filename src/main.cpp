@@ -175,15 +175,19 @@ void opcontrol() {
 	int count = 0;
 	bool intake_power = false;
 	int intake_direction = 1;
+
+	pros::Optical optical_sensor(1);
+	pros::c::optical_rgb_s_t rgb_value;
+
 	while (true) {
 
 		
 		// Flywheel Toggle
-		if (!(count % 25)){ //Printing average RPMS on to the screen
-			controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
-		}
-			count++;
-			pros::delay(2);
+		// if (!(count % 25)){ //Printing average RPMS on to the screen
+		// 	controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
+		// }
+		// 	count++;
+		// 	pros::delay(2);
 		if (controller.get_digital(DIGITAL_L1)){ //Spin up
 			outFlywheel.move(127);
 			midFlywheel.move(127);
@@ -195,9 +199,9 @@ void opcontrol() {
 		}
 		
 		//Full intake code
-		if(!(count % 25)){
-			controller.print(2,0, "Intake: %f ", intake.get_actual_velocity());
-		}
+		// if(!(count % 25)){
+		// 	controller.print(2,0, "Intake: %f ", intake.get_actual_velocity());
+		// }
 
 		if(controller.get_digital_new_press(DIGITAL_R1)){
 			intake_power = !intake_power;
@@ -214,6 +218,26 @@ void opcontrol() {
 			intake.brake();
 		}
 
+		//optical sensor
+		rgb_value = optical_sensor.get_rgb();
+		if(!(count % 25)){
+		controller.print(0,0,"Red: %lf \n", rgb_value.red);
+		}
+		count++;
+		pros::delay(2);
+
+		if(!(count % 25)){
+			controller.print(1,0,"Blue: %lf \n", rgb_value.blue);
+		}
+		count++;
+		pros::delay(2);
+		
+		if(!(count % 25)){
+		controller.print(2,0,"Green: %lf \n", rgb_value.green);
+		}
+		count++;
+		pros::delay(2);
+		
 
 		//Driver Curves
 
