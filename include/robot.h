@@ -18,6 +18,9 @@ extern pros::ADIEncoder leftE;
 extern pros::ADIEncoder rightE;
 extern pros::ADIEncoder midE;
 
+extern pros::Optical optical_sensor;
+extern pros::c::optical_rgb_s_t rgb_value;
+
 extern pros::Imu imu;
 extern pros::ADIDigitalOut chainClaw;
 extern pros::ADIDigitalOut jSClamp;
