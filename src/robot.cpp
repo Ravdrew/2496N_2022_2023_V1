@@ -12,6 +12,7 @@ pros::Motor outFlywheel(8, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 
 
 pros::Optical optical_sensor(7);
+// pros::Limit limit_sensor(10);
 
 pros::ADIEncoder leftE(1, 2);
 pros::ADIEncoder rightE(3, 4);

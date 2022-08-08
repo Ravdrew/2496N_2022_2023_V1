@@ -130,6 +130,22 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
+// void teamSelect(){
+// 	int autonState = 0;
+// 	bool buttonUnpressed = true;
+// 	if(Switch.isPressed() && buttonUnpressed){
+// 		autonState++;
+// 		if(autonState==5){
+// 			autonState = 0;
+// 			buttonUnpressed = false;
+// 		}
+// 	}
+// 		if(!Switch.isPressed()){
+// 			buttonUnpressed = true;
+
+// 		}	
+// 	pros::delay(5);
+// }
 
 void autonSelect(){
 	/*if(plus.get_value() && !switchPressed){
@@ -182,10 +198,10 @@ void opcontrol() {
 	while (true) {
 
 		
-		//Flywheel Toggle
-		if (!(count % 25)){ //Printing average RPMS on to the screen
-			controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
-		}
+		// //Flywheel Toggle
+		// if (!(count % 25)){ //Printing average RPMS on to the screen
+		// 	controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
+		// }
 			count++;
 			pros::delay(2);
 		if (controller.get_digital(DIGITAL_L1)){ //Spin up
@@ -198,7 +214,7 @@ void opcontrol() {
 			midFlywheel.brake();
 		}
 		
-		//Full intake code
+		// //Full intake code
 		// if(!(count % 25)){
 		// 	controller.print(2,0, "Intake: %f ", intake.get_actual_velocity());
 		// }
