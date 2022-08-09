@@ -54,12 +54,37 @@ void disabled() {
  * This task will exit when the robot is enabled and autonomous or opcontrol
  * starts.
  */
-int selectedAuto = 1;
 
+int selectedTeam = 1;
 bool switchPressed = false;
+int timer = 0;
 bool resetNeeded = false;
 
-int timer = 0;
+void teamSelect(){
+	if(plus.get_value() && !switchPressed){
+		switchPressed = true;
+		selectedTeam += 1;
+	}
+	else if(plus.get_value() == false){
+		switchPressed = false;
+	}
+
+	if (!(timer % 5)) {
+		if(resetNeeded){
+			resetNeeded = false;
+			controller.clear();
+		}
+		if(selectedTeam == 1) controller.set_text(1,0, "Blue");
+		if(selectedTeam == 2) controller.set_text(1,0, "Red");
+	}
+	timer ++;
+}
+// int selectedAuto = 1;
+
+// bool switchPressed = false;
+// bool resetNeeded = false;
+
+// int timer = 0;
 
 void autonSelect(){
 	/*if(plus.get_value() && !switchPressed){
@@ -148,7 +173,7 @@ void opcontrol() {
 		// 	controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
 		// }
 	
-		if (controller.get_digital(DIGITAL_L1)){ //Spin up
+		if (controller.get_digital(DIGITAL_R1)){ //Spin up
 			outFlywheel.move(127);
 			midFlywheel.move(127);
 		}
@@ -157,16 +182,11 @@ void opcontrol() {
 			midFlywheel.brake();
 		}
 
-		if(controller.get_digital_new_press(DIGITAL_R1)){
-			intake_direction = 1;
-			intake_power = !intake_power;
+		if(controller.get_digital(DIGITAL_L1)){
+			intake.move(127);
 		}
-		if(controller.get_digital_new_press(DIGITAL_R2)){
-			intake_direction = intake_direction * -1;
-		}
-
-		if(intake_power){
-			intake.move(127*intake_direction); //Toggle Direction
+		else if(controller.get_digital(DIGITAL_UP)){
+			intake.move(-127);
 		}
 		else {
 			intake.brake();
@@ -187,6 +207,22 @@ void opcontrol() {
 
 		pros::delay(20);
 	}
+
+	// if(controller.get_digital_new_press(DIGITAL_R1)){
+	// 		intake_direction = 1;
+	// 		intake_power = !intake_power;
+	// 	}
+	// 	if(controller.get_digital_new_press(DIGITAL_R2)){
+	// 		intake_direction = intake_direction * -1;
+	// 	}
+
+	// 	if(intake_power){
+	// 		intake.move(127*intake_direction); //Toggle Direction
+	// 	}
+	// 	else {
+	// 		intake.brake();
+	// 	}
+
 
 	
 }
