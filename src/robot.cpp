@@ -7,10 +7,15 @@ pros::Motor leftBack(9, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::Motor rightFront(5, MOTOR_GEARSET_6, true, MOTOR_ENCODER_DEGREES);
 pros::Motor rightBack(1, MOTOR_GEARSET_6, true, MOTOR_ENCODER_DEGREES);
 pros::Motor intake(2, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
+pros::Motor indexer(10, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::Motor midFlywheel(4, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::Motor outFlywheel(8, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 
-
+//hello
+//this is gerald
+//i come to you from 2042
+//i need to warn you about the inevitable future
+//[redacted]
 pros::Optical optical_sensor(7);
 pros::c::optical_rgb_s_t rgb_value;
 // pros::Limit limit_sensor(10);

@@ -60,7 +60,7 @@ bool switchPressed = false;
 int timer = 0;
 bool resetNeeded = false;
 
-void teamSelect(){
+/*void teamSelect(){
 	if(plus.get_value() && !switchPressed){
 		switchPressed = true;
 		selectedTeam += 1;
@@ -78,7 +78,7 @@ void teamSelect(){
 		if(selectedTeam == 2) controller.set_text(1,0, "Red");
 	}
 	timer ++;
-}
+}*/
 // int selectedAuto = 1;
 
 // bool switchPressed = false;
@@ -160,6 +160,7 @@ void opcontrol() {
 	rightFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	rightBack.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	indexer.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	outFlywheel.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	midFlywheel.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 
@@ -169,11 +170,12 @@ void opcontrol() {
 
 	while (true) {
 		// //Flywheel Toggle
-		// if (!(count % 25)){ //Printing average RPMS on to the screen
-		// 	controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
-		// }
+		if (!(count % 5)){ //Printing average RPMS on to the screen
+			controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
+		}
+		count += 1;
 	
-		if (controller.get_digital(DIGITAL_R1)){ //Spin up
+		if (controller.get_digital(DIGITAL_R2)){ //Spin up
 			outFlywheel.move(127);
 			midFlywheel.move(127);
 		}
@@ -192,6 +194,13 @@ void opcontrol() {
 			intake.brake();
 		}
 
+		if(controller.get_digital(DIGITAL_R1)){
+			indexer.move(127);
+		}
+		else {
+			indexer.brake();
+		}
+
 		//Driver Curves
 
 		float lPwr, rPwr;
@@ -205,7 +214,7 @@ void opcontrol() {
 		chas_move(lPwr, rPwr);
 	
 
-		pros::delay(20);
+		pros::delay(10);
 	}
 
 	// if(controller.get_digital_new_press(DIGITAL_R1)){
