@@ -4,7 +4,9 @@
 #define FLY_H_
 
 int sgn(double input);
-void changeTBHTarget(float speed);
-void takeBackHalf();
+//void changeTBHTarget(float speed);
+//void takeBackHalf();
+void flywheelMove(double speed);
+void flywheelBrake();
 
 #endif

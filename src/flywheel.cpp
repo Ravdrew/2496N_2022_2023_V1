@@ -3,11 +3,21 @@
 #include "flywheel.h"
 #define TBH_GAIN 0
 
+void flywheelMove(double speed){
+    outFlywheel.move_velocity(speed);
+	midFlywheel.move_velocity(speed);
+}
+
+void flywheelBrake(){
+    outFlywheel.brake();
+	midFlywheel.brake();
+}
+
 int sgn(double input){
 	return input/abs(input);
 }
 
-float tbh_target = 600;
+/*float tbh_target = 600;
 
 float tbh_error = 0;
 float tbh_prev_error = 0;
@@ -34,4 +44,4 @@ void takeBackHalf(){
 
     midFlywheel.move(tbh_output);
     outFlywheel.move(tbh_output);
-}
+}*/

@@ -167,27 +167,35 @@ void opcontrol() {
 	int count = 0;
 	bool intake_power = false;
 	int intake_direction = 1;
+	bool flywheel_on = false;
+	double testFlywheelSpeed = 450;
 
 	while (true) {
 		// //Flywheel Toggle
 		if (!(count % 5)){ //Printing average RPMS on to the screen
-			controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
+			//controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
+			controller.print(0,0,"%f %f", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2, testFlywheelSpeed);
 		}
 		count += 1;
 	
-		if (controller.get_digital(DIGITAL_R2)){ //Spin up
-			outFlywheel.move(127);
-			midFlywheel.move(127);
+		if(controller.get_digital_new_press(DIGITAL_X)){
+			testFlywheelSpeed += 10;
 		}
-		else if (controller.get_digital(DIGITAL_LEFT)) { //Spin down
-			outFlywheel.brake();
-			midFlywheel.brake();
+		else if(controller.get_digital_new_press(DIGITAL_A)){
+			testFlywheelSpeed -= 10;
+		}
+
+		if (controller.get_digital_new_press(DIGITAL_R2)){ //Spin up
+			flywheelMove(testFlywheelSpeed);
+		}
+		else if (controller.get_digital_new_press(DIGITAL_LEFT)) { //Spin down
+			flywheelBrake();
 		}
 
 		if(controller.get_digital(DIGITAL_L1)){
 			intake.move(127);
 		}
-		else if(controller.get_digital(DIGITAL_UP)){
+		else if(controller.get_digital(DIGITAL_L2)){
 			intake.move(-127);
 		}
 		else {
