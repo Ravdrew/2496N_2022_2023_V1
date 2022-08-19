@@ -55,30 +55,6 @@ void disabled() {
  * starts.
  */
 
-int selectedTeam = 1;
-bool switchPressed = false;
-int timer = 0;
-bool resetNeeded = false;
-
-/*void teamSelect(){
-	if(plus.get_value() && !switchPressed){
-		switchPressed = true;
-		selectedTeam += 1;
-	}
-	else if(plus.get_value() == false){
-		switchPressed = false;
-	}
-
-	if (!(timer % 5)) {
-		if(resetNeeded){
-			resetNeeded = false;
-			controller.clear();
-		}
-		if(selectedTeam == 1) controller.set_text(1,0, "Blue");
-		if(selectedTeam == 2) controller.set_text(1,0, "Red");
-	}
-	timer ++;
-}*/
 // int selectedAuto = 1;
 
 // bool switchPressed = false;
@@ -170,13 +146,44 @@ void opcontrol() {
 	bool flywheel_on = false;
 	double testFlywheelSpeed = 450;
 
+	int selectedTeam = 1;
+
 	while (true) {
-		// //Flywheel Toggle
-		if (!(count % 5)){ //Printing average RPMS on to the screen
-			//controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
-			controller.print(0,0,"%f %f", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2, testFlywheelSpeed);
+
+		//Selecting team for optical sensor
+		if(controller.get_digital_new_press(DIGITAL_UP)){
+			controller.clear();
+			selectedTeam = selectedTeam * -1;
 		}
-		count += 1;
+
+		if(selectedTeam == -1){
+			controller.print(1,1,"Blue");
+		}
+
+		if(selectedTeam == 1){
+			controller.print(1,1,"Red");
+		}
+
+		if(controller.get_digital_new_press(DIGITAL_DOWN)  && (selectedTeam == 1)){
+			optical_sensor.get_hue();
+			while(optical_sensor.get_hue() >= 200){
+				intake.move(-127);
+			}
+		}
+
+		if(controller.get_digital_new_press(DIGITAL_DOWN)&& (selectedTeam == -1)){
+			optical_sensor.get_hue();
+			while(optical_sensor.get_hue() < 200){
+				intake.move(-127);
+			}
+		}
+
+		// //Flywheel Toggle
+		// if (!(count % 5)){ //Printing average RPMS on to the screen
+		// 	//controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
+		// 	controller.print(0,0,"%f %f", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2, testFlywheelSpeed);
+		// }
+		// count += 1;
 	
 		if(controller.get_digital_new_press(DIGITAL_X)){
 			testFlywheelSpeed += 10;
