@@ -164,20 +164,22 @@ void opcontrol() {
 			controller.print(1,1,"Red");
 		}
 
+		//Optical Sensor Code
 		if(controller.get_digital_new_press(DIGITAL_DOWN)  && (selectedTeam == 1)){
 			optical_sensor.get_hue();
-			while(optical_sensor.get_hue() >= 200){
+			if(optical_sensor.get_hue() >= 200){
 				intake.move(-127);
 			}
 		}
-
-		if(controller.get_digital_new_press(DIGITAL_DOWN)&& (selectedTeam == -1)){
+		else if(controller.get_digital_new_press(DIGITAL_DOWN) && (selectedTeam == -1)){
 			optical_sensor.get_hue();
-			while(optical_sensor.get_hue() < 200){
+			if(optical_sensor.get_hue() < 200){
 				intake.move(-127);
 			}
 		}
-
+		else{
+			intake.brake();
+		}
 		// //Flywheel Toggle
 		// if (!(count % 5)){ //Printing average RPMS on to the screen
 		// 	//controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
