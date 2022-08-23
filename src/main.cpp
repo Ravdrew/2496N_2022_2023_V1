@@ -147,12 +147,16 @@ void opcontrol() {
 	double testFlywheelSpeed = 450;
 
 	int selectedTeam = 1;
+	bool intakeOpticalSensorRed = false;
+	bool intakeOpticalSensorBlue = false;
+	double get_hue;
 
 	while (true) {
 
 		//Selecting team for optical sensor
 		if(controller.get_digital_new_press(DIGITAL_UP)){
 			controller.clear();
+			pros::delay(10);
 			selectedTeam = selectedTeam * -1;
 		}
 
@@ -165,21 +169,29 @@ void opcontrol() {
 		}
 
 		//Optical Sensor Code
-		if(controller.get_digital_new_press(DIGITAL_DOWN)  && (selectedTeam == 1)){
-			optical_sensor.get_hue();
-			if(optical_sensor.get_hue() >= 200){
-				intake.move(-127);
+		if(controller.get_digital_new_press(DIGITAL_DOWN) && (selectedTeam == 1)){
+			optical_sensor.set_led_pwm(90);
+			intakeOpticalSensorRed = !intakeOpticalSensorRed;
+		}
+		if(intakeOpticalSensorRed == true){
+			intake.move(-127);
+			if(optical_sensor.get_hue() >= 100){
+				intake.brake();
+				intakeOpticalSensorRed = !intakeOpticalSensorRed;
 			}
 		}
-		else if(controller.get_digital_new_press(DIGITAL_DOWN) && (selectedTeam == -1)){
-			optical_sensor.get_hue();
-			if(optical_sensor.get_hue() < 200){
-				intake.move(-127);
+		if(controller.get_digital_new_press(DIGITAL_DOWN) && (selectedTeam == -1)){
+			optical_sensor.set_led_pwm(90);
+			intakeOpticalSensorBlue = !intakeOpticalSensorBlue;
+		}
+		if(intakeOpticalSensorBlue == true){
+			intake.move(-127);
+			if(optical_sensor.get_hue() >= 100){
+				intake.brake();
+				intakeOpticalSensorBlue = !intakeOpticalSensorBlue;
 			}
 		}
-		else{
-			intake.brake();
-		}
+
 		// //Flywheel Toggle
 		// if (!(count % 5)){ //Printing average RPMS on to the screen
 		// 	//controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
@@ -201,15 +213,15 @@ void opcontrol() {
 			flywheelBrake();
 		}
 
-		if(controller.get_digital(DIGITAL_L1)){
-			intake.move(127);
-		}
-		else if(controller.get_digital(DIGITAL_L2)){
-			intake.move(-127);
-		}
-		else {
-			intake.brake();
-		}
+		// if(controller.get_digital(DIGITAL_L1)){
+		// 	intake.move(127);
+		// }
+		// else if(controller.get_digital(DIGITAL_L2)){
+		// 	intake.move(-127);
+		// }
+		// else {
+		// 	intake.brake();
+		// }
 
 		if(controller.get_digital(DIGITAL_R1)){
 			indexer.move(127);
