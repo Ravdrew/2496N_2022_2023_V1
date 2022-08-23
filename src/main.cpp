@@ -175,7 +175,7 @@ void opcontrol() {
 		}
 		if(intakeOpticalSensorRed == true){
 			intake.move(-127);
-			if(optical_sensor.get_hue() >= 100){
+			if(optical_sensor.get_hue() > 100){
 				intake.brake();
 				intakeOpticalSensorRed = !intakeOpticalSensorRed;
 			}
@@ -186,7 +186,8 @@ void opcontrol() {
 		}
 		if(intakeOpticalSensorBlue == true){
 			intake.move(-127);
-			if(optical_sensor.get_hue() >= 100){
+			controller.print(2,0,"YES!");
+			if(optical_sensor.get_hue() < 100){
 				intake.brake();
 				intakeOpticalSensorBlue = !intakeOpticalSensorBlue;
 			}
