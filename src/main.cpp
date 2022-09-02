@@ -150,13 +150,15 @@ void opcontrol() {
 	bool intakeOpticalSensorRed = false;
 	bool intakeOpticalSensorBlue = false;
 	double get_hue;
+	bool rollerToggle = false;
+	bool flywheelToggle = false;
 
 	while (true) {
 
 		//Selecting team for optical sensor
 		if(controller.get_digital_new_press(DIGITAL_UP)){
 			controller.clear();
-			pros::delay(10);
+			pros::delay(50);
 			selectedTeam = selectedTeam * -1;
 		}
 
@@ -169,29 +171,32 @@ void opcontrol() {
 		}
 
 		//Optical Sensor Code
-		if(controller.get_digital_new_press(DIGITAL_DOWN) && (selectedTeam == 1)){
-			optical_sensor.set_led_pwm(90);
-			intakeOpticalSensorRed = !intakeOpticalSensorRed;
+		
+		if (controller.get_digital_new_press(DIGITAL_DOWN)){
+			rollerToggle = !rollerToggle;
 		}
-		if(intakeOpticalSensorRed == true){
-			intake.move(-127);
-			if(optical_sensor.get_hue() > 100){
-				intake.brake();
-				intakeOpticalSensorRed = !intakeOpticalSensorRed;
+		if(rollerToggle == true){
+			optical_sensor.set_led_pwm(90);
+			if(selectedTeam == 1){
+				intake.move(-127);
+				if(optical_sensor.get_hue() >= 100){
+					intake.brake();
+					rollerToggle = !rollerToggle;
+				}
+			}
+			else if(selectedTeam == -1){
+				intake.move(-127);
+				if(optical_sensor.get_hue() < 50){
+					intake.brake();
+					rollerToggle = !rollerToggle;
+				}
 			}
 		}
-		if(controller.get_digital_new_press(DIGITAL_DOWN) && (selectedTeam == -1)){
-			optical_sensor.set_led_pwm(90);
-			intakeOpticalSensorBlue = !intakeOpticalSensorBlue;
+
+		if(controller.get_digital_new_press(DIGITAL_Y) && controller.get_digital_new_press(DIGITAL_B)){
+
 		}
-		if(intakeOpticalSensorBlue == true){
-			intake.move(-127);
-			controller.print(2,0,"YES!");
-			if(optical_sensor.get_hue() < 100){
-				intake.brake();
-				intakeOpticalSensorBlue = !intakeOpticalSensorBlue;
-			}
-		}
+		
 
 		// //Flywheel Toggle
 		// if (!(count % 5)){ //Printing average RPMS on to the screen
@@ -208,23 +213,26 @@ void opcontrol() {
 		}
 
 		if (controller.get_digital_new_press(DIGITAL_R2)){ //Spin up
+			flywheelToggle = !flywheelToggle;
+		}
+		if(flywheelToggle == true){
 			flywheelMove(testFlywheelSpeed);
 		}
-		else if (controller.get_digital_new_press(DIGITAL_LEFT)) { //Spin down
+		else if(flywheelToggle == false){ //Spin down
 			flywheelBrake();
 		}
 
-		// if(controller.get_digital(DIGITAL_L1)){
-		// 	intake.move(127);
-		// }
-		// else if(controller.get_digital(DIGITAL_L2)){
-		// 	intake.move(-127);
-		// }
-		// else {
-		// 	intake.brake();
-		// }
-
 		if(controller.get_digital(DIGITAL_R1)){
+			intake.move(127);
+		}
+		else if(controller.get_digital(DIGITAL_L1)){
+			intake.move(-127);
+		}
+		else {
+			intake.brake();
+		}
+
+		if(controller.get_digital(DIGITAL_L2)){
 			indexer.move(127);
 		}
 		else {
@@ -262,6 +270,28 @@ void opcontrol() {
 	// 		intake.brake();
 	// 	}
 
-
+	// if(controller.get_digital_new_press(DIGITAL_DOWN) && (selectedTeam == 1)){
+		// 	optical_sensor.set_led_pwm(90);
+		// 	intakeOpticalSensorRed = !intakeOpticalSensorRed;
+		// }
+		// if(intakeOpticalSensorRed == true){
+		// 	intake.move(-127);
+		// 	if(optical_sensor.get_hue() > 100){
+		// 		intake.brake();
+		// 		intakeOpticalSensorRed = !intakeOpticalSensorRed;
+		// 	}
+		// }
 	
+	// if(controller.get_digital_new_press(DIGITAL_B) && (selectedTeam == -1)){
+		// 	optical_sensor.set_led_pwm(90);
+		// 	intakeOpticalSensorBlue = !intakeOpticalSensorBlue;
+		// }
+		// if(intakeOpticalSensorBlue == true){
+		// 	intake.move(-127);
+		// 	controller.print(2,0,"YES!");
+		// 	if(optical_sensor.get_hue() < 100){
+		// 		intake.brake();
+		// 		intakeOpticalSensorBlue = !intakeOpticalSensorBlue;
+		// 	}
+		// }
 }
