@@ -198,12 +198,12 @@ void opcontrol() {
 		}
 		
 
-		// //Flywheel Toggle
-		// if (!(count % 5)){ //Printing average RPMS on to the screen
-		// 	//controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
-		// 	controller.print(0,0,"%f %f", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2, testFlywheelSpeed);
-		// }
-		// count += 1;
+		//Flywheel Toggle
+		if (!(count % 5)){ //Printing average RPMS on to the screen
+			//controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
+			controller.print(0,0,"%f %f", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2, testFlywheelSpeed);
+		}
+		count += 1;
 	
 		if(controller.get_digital_new_press(DIGITAL_X)){
 			testFlywheelSpeed += 10;
@@ -222,21 +222,26 @@ void opcontrol() {
 			flywheelBrake();
 		}
 
-		if(controller.get_digital(DIGITAL_R1)){
-			intake.move(127);
-		}
-		else if(controller.get_digital(DIGITAL_L1)){
-			intake.move(-127);
-		}
-		else {
-			intake.brake();
-		}
-
 		if(controller.get_digital(DIGITAL_L2)){
-			indexer.move(127);
+			indexer.move(50);
 		}
 		else {
 			indexer.brake();
+		}
+
+		if(controller.get_digital_new_press(DIGITAL_R1)){
+			intake_direction = 1;
+			intake_power = !intake_power;
+		}
+		if(controller.get_digital_new_press(DIGITAL_B)){
+			intake_direction = intake_direction * -1;
+		}
+
+		if(intake_power){
+			intake.move(127*intake_direction); //Toggle Direction
+		}
+		else {
+			intake.brake();
 		}
 
 		//Driver Curves
@@ -255,20 +260,7 @@ void opcontrol() {
 		pros::delay(10);
 	}
 
-	// if(controller.get_digital_new_press(DIGITAL_R1)){
-	// 		intake_direction = 1;
-	// 		intake_power = !intake_power;
-	// 	}
-	// 	if(controller.get_digital_new_press(DIGITAL_R2)){
-	// 		intake_direction = intake_direction * -1;
-	// 	}
-
-	// 	if(intake_power){
-	// 		intake.move(127*intake_direction); //Toggle Direction
-	// 	}
-	// 	else {
-	// 		intake.brake();
-	// 	}
+	
 
 	// if(controller.get_digital_new_press(DIGITAL_DOWN) && (selectedTeam == 1)){
 		// 	optical_sensor.set_led_pwm(90);

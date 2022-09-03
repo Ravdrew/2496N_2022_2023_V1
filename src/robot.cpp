@@ -6,7 +6,7 @@ pros::Motor leftFront(7, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::Motor leftBack(9, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::Motor rightFront(5, MOTOR_GEARSET_6, true, MOTOR_ENCODER_DEGREES);
 pros::Motor rightBack(3, MOTOR_GEARSET_6, true, MOTOR_ENCODER_DEGREES);
-pros::Motor intake(2, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
+pros::Motor intake(8, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::Motor indexer(10, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::Motor midFlywheel(4, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::Motor outFlywheel(6, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
