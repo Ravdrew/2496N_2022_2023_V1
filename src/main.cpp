@@ -30,10 +30,10 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	// pros::lcd::initialize();
-	// pros::lcd::set_text(1, "Hello PROS User!");
+	pros::lcd::initialize();
+	pros::lcd::set_text(1, "Hello PROS User!");
 
-	// pros::lcd::register_btn1_cb(on_center_button);
+	pros::lcd::register_btn1_cb(on_center_button);
 }
 
 /**
@@ -173,10 +173,15 @@ void opcontrol() {
 	while (true) {
 		// //Flywheel Toggle
 		if (!(count % 5)){ //Printing average RPMS on to the screen
-			//controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
-			controller.print(0,0,"%f %f", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2, testFlywheelSpeed);
+			controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
+			//controller.print(0,0,"%f %f", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2, testFlywheelSpeed);
+			//controller.print(0,0,"%f", leftE.get_value());
 		}
 		count += 1;
+		/*pros::lcd::print(3, "%f", leftE.get_value());
+		pros::lcd::print(4, "%f", midE.get_value());
+		pros::lcd::print(5, "%f", rightE.get_value());*/
+		std::cout << leftE.get_value() << std::endl;
 	
 		if(controller.get_digital_new_press(DIGITAL_X)){
 			testFlywheelSpeed += 10;
