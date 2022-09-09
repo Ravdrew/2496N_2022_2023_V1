@@ -55,30 +55,6 @@ void disabled() {
  * starts.
  */
 
-int selectedTeam = 1;
-bool switchPressed = false;
-int timer = 0;
-bool resetNeeded = false;
-
-/*void teamSelect(){
-	if(plus.get_value() && !switchPressed){
-		switchPressed = true;
-		selectedTeam += 1;
-	}
-	else if(plus.get_value() == false){
-		switchPressed = false;
-	}
-
-	if (!(timer % 5)) {
-		if(resetNeeded){
-			resetNeeded = false;
-			controller.clear();
-		}
-		if(selectedTeam == 1) controller.set_text(1,0, "Blue");
-		if(selectedTeam == 2) controller.set_text(1,0, "Red");
-	}
-	timer ++;
-}*/
 // int selectedAuto = 1;
 
 // bool switchPressed = false;
@@ -170,8 +146,59 @@ void opcontrol() {
 	bool flywheel_on = false;
 	double testFlywheelSpeed = 450;
 
+	int selectedTeam = 1;
+	bool intakeOpticalSensorRed = false;
+	bool intakeOpticalSensorBlue = false;
+	double get_hue;
+	bool rollerToggle = false;
+	bool flywheelToggle = false;
+
 	while (true) {
-		// //Flywheel Toggle
+
+		//Selecting team for optical sensor
+		if(controller.get_digital_new_press(DIGITAL_UP)){
+			controller.clear();
+			pros::delay(50);
+			selectedTeam = selectedTeam * -1;
+		}
+
+		if(selectedTeam == -1){
+			controller.print(1,1,"Blue");
+		}
+
+		if(selectedTeam == 1){
+			controller.print(1,1,"Red");
+		}
+
+		//Optical Sensor Code
+		
+		if (controller.get_digital_new_press(DIGITAL_DOWN)){
+			rollerToggle = !rollerToggle;
+		}
+		if(rollerToggle == true){
+			optical_sensor.set_led_pwm(90);
+			if(selectedTeam == 1){
+				intake.move(-127);
+				if(optical_sensor.get_hue() >= 100){
+					intake.brake();
+					rollerToggle = !rollerToggle;
+				}
+			}
+			else if(selectedTeam == -1){
+				intake.move(-127);
+				if(optical_sensor.get_hue() < 50){
+					intake.brake();
+					rollerToggle = !rollerToggle;
+				}
+			}
+		}
+
+		if(controller.get_digital_new_press(DIGITAL_Y) && controller.get_digital_new_press(DIGITAL_B)){
+
+		}
+		
+
+		//Flywheel Toggle
 		if (!(count % 5)){ //Printing average RPMS on to the screen
 			controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
 			//controller.print(0,0,"%f %f", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2, testFlywheelSpeed);
@@ -191,27 +218,35 @@ void opcontrol() {
 		}
 
 		if (controller.get_digital_new_press(DIGITAL_R2)){ //Spin up
+			flywheelToggle = !flywheelToggle;
+		}
+		if(flywheelToggle == true){
 			flywheelMove(testFlywheelSpeed);
 		}
-		else if (controller.get_digital_new_press(DIGITAL_LEFT)) { //Spin down
+		else if(flywheelToggle == false){ //Spin down
 			flywheelBrake();
 		}
 
-		if(controller.get_digital(DIGITAL_L1)){
-			intake.move(127);
-		}
-		else if(controller.get_digital(DIGITAL_L2)){
-			intake.move(-127);
-		}
-		else {
-			intake.brake();
-		}
-
-		if(controller.get_digital(DIGITAL_R1)){
-			indexer.move(127);
+		if(controller.get_digital(DIGITAL_L2)){
+			indexer.move(50);
 		}
 		else {
 			indexer.brake();
+		}
+
+		if(controller.get_digital_new_press(DIGITAL_R1)){
+			intake_direction = 1;
+			intake_power = !intake_power;
+		}
+		if(controller.get_digital_new_press(DIGITAL_B)){
+			intake_direction = intake_direction * -1;
+		}
+
+		if(intake_power){
+			intake.move(127*intake_direction); //Toggle Direction
+		}
+		else {
+			intake.brake();
 		}
 
 		//Driver Curves
@@ -230,21 +265,30 @@ void opcontrol() {
 		pros::delay(10);
 	}
 
-	// if(controller.get_digital_new_press(DIGITAL_R1)){
-	// 		intake_direction = 1;
-	// 		intake_power = !intake_power;
-	// 	}
-	// 	if(controller.get_digital_new_press(DIGITAL_R2)){
-	// 		intake_direction = intake_direction * -1;
-	// 	}
-
-	// 	if(intake_power){
-	// 		intake.move(127*intake_direction); //Toggle Direction
-	// 	}
-	// 	else {
-	// 		intake.brake();
-	// 	}
-
-
 	
+
+	// if(controller.get_digital_new_press(DIGITAL_DOWN) && (selectedTeam == 1)){
+		// 	optical_sensor.set_led_pwm(90);
+		// 	intakeOpticalSensorRed = !intakeOpticalSensorRed;
+		// }
+		// if(intakeOpticalSensorRed == true){
+		// 	intake.move(-127);
+		// 	if(optical_sensor.get_hue() > 100){
+		// 		intake.brake();
+		// 		intakeOpticalSensorRed = !intakeOpticalSensorRed;
+		// 	}
+		// }
+	
+	// if(controller.get_digital_new_press(DIGITAL_B) && (selectedTeam == -1)){
+		// 	optical_sensor.set_led_pwm(90);
+		// 	intakeOpticalSensorBlue = !intakeOpticalSensorBlue;
+		// }
+		// if(intakeOpticalSensorBlue == true){
+		// 	intake.move(-127);
+		// 	controller.print(2,0,"YES!");
+		// 	if(optical_sensor.get_hue() < 100){
+		// 		intake.brake();
+		// 		intakeOpticalSensorBlue = !intakeOpticalSensorBlue;
+		// 	}
+		// }
 }
