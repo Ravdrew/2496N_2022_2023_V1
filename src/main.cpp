@@ -193,11 +193,6 @@ void opcontrol() {
 			}
 		}
 
-		if(controller.get_digital_new_press(DIGITAL_Y) && controller.get_digital_new_press(DIGITAL_B)){
-
-		}
-		
-
 		//Flywheel Toggle
 		if (!(count % 5)){ //Printing average RPMS on to the screen
 			controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
