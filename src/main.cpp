@@ -172,7 +172,7 @@ void opcontrol() {
 
 		//Optical Sensor Code
 		
-		if (controller.get_digital_new_press(DIGITAL_DOWN)){
+		/*if (controller.get_digital_new_press(DIGITAL_DOWN)){
 			rollerToggle = !rollerToggle;
 		}
 		if(rollerToggle == true){
@@ -191,7 +191,7 @@ void opcontrol() {
 					rollerToggle = !rollerToggle;
 				}
 			}
-		}
+		}*/
 		
 
 		//Flywheel Toggle
@@ -223,20 +223,17 @@ void opcontrol() {
 			flywheelBrake();
 		}
 
-		if(controller.get_digital(DIGITAL_L1)){
+		if(controller.get_digital(DIGITAL_R1)){
 			indexer.move(127);
-		}
-		else if(controller.get_digital(DIGITAL_L2)){
-			indexer.move(-127);
 		}
 		else{
 			indexer.move(0);
 		}
 
-		if(controller.get_digital(DIGITAL_R1)){
+		if(controller.get_digital(DIGITAL_L1)){
 			intake.move(127);
 		}
-		else if(controller.get_digital(DIGITAL_R2)){
+		else if(controller.get_digital(DIGITAL_L2)){
 			intake.move(-127);
 		}
 		else{
