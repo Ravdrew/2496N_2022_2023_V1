@@ -144,7 +144,7 @@ void opcontrol() {
 	bool intake_power = false;
 	int intake_direction = 1;
 	bool flywheel_on = false;
-	double testFlywheelSpeed = 450;
+	double testFlywheelSpeed = 500;
 
 	int selectedTeam = 1;
 	bool intakeOpticalSensorRed = false;
@@ -192,10 +192,6 @@ void opcontrol() {
 				}
 			}
 		}
-
-		if(controller.get_digital_new_press(DIGITAL_Y) && controller.get_digital_new_press(DIGITAL_B)){
-
-		}
 		
 
 		//Flywheel Toggle
@@ -208,7 +204,7 @@ void opcontrol() {
 		/*pros::lcd::print(3, "%f", leftE.get_value());
 		pros::lcd::print(4, "%f", midE.get_value());
 		pros::lcd::print(5, "%f", rightE.get_value());*/
-		std::cout << leftE.get_value() << std::endl;
+		//std::cout << leftE.get_value() << std::endl;
 	
 		if(controller.get_digital_new_press(DIGITAL_X)){
 			testFlywheelSpeed += 10;
@@ -217,7 +213,7 @@ void opcontrol() {
 			testFlywheelSpeed -= 10;
 		}
 
-		if (controller.get_digital_new_press(DIGITAL_R2)){ //Spin up
+		if (controller.get_digital_new_press(DIGITAL_DOWN)){ //Spin up
 			flywheelToggle = !flywheelToggle;
 		}
 		if(flywheelToggle == true){
@@ -227,26 +223,24 @@ void opcontrol() {
 			flywheelBrake();
 		}
 
-		if(controller.get_digital(DIGITAL_L2)){
-			indexer.move(50);
+		if(controller.get_digital(DIGITAL_L1)){
+			indexer.move(127);
 		}
-		else {
-			indexer.brake();
+		else if(controller.get_digital(DIGITAL_L2)){
+			indexer.move(-127);
 		}
-
-		if(controller.get_digital_new_press(DIGITAL_R1)){
-			intake_direction = 1;
-			intake_power = !intake_power;
-		}
-		if(controller.get_digital_new_press(DIGITAL_B)){
-			intake_direction = intake_direction * -1;
+		else{
+			indexer.move(0);
 		}
 
-		if(intake_power){
-			intake.move(127*intake_direction); //Toggle Direction
+		if(controller.get_digital(DIGITAL_R1)){
+			intake.move(127);
 		}
-		else {
-			intake.brake();
+		else if(controller.get_digital(DIGITAL_R2)){
+			intake.move(-127);
+		}
+		else{
+			intake.move(0);
 		}
 
 		//Driver Curves
