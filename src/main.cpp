@@ -144,7 +144,7 @@ void opcontrol() {
 	bool intake_power = false;
 	int intake_direction = 1;
 	bool flywheel_on = false;
-	double testFlywheelSpeed = 500;
+	double testFlywheelSpeed = 470;
 
 	int selectedTeam = 1;
 	bool intakeOpticalSensorRed = false;
