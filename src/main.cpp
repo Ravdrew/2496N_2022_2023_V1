@@ -172,32 +172,32 @@ void opcontrol() {
 
 		//Optical Sensor Code
 		
-		/*if (controller.get_digital_new_press(DIGITAL_DOWN)){
+		if (controller.get_digital_new_press(DIGITAL_R2)){
 			rollerToggle = !rollerToggle;
 		}
 		if(rollerToggle == true){
 			optical_sensor.set_led_pwm(90);
-			if(selectedTeam == 1){
+			if(selectedTeam == -1){
 				intake.move(-127);
 				if(optical_sensor.get_hue() >= 100){
 					intake.brake();
 					rollerToggle = !rollerToggle;
 				}
 			}
-			else if(selectedTeam == -1){
+			else if(selectedTeam == 1){
 				intake.move(-127);
 				if(optical_sensor.get_hue() < 50){
 					intake.brake();
 					rollerToggle = !rollerToggle;
 				}
 			}
-		}*/
+		}
 		
 
 		//Flywheel Toggle
 		if (!(count % 5)){ //Printing average RPMS on to the screen
-			controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
-			//controller.print(0,0,"%f %f", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2, testFlywheelSpeed);
+			//controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
+			controller.print(0,0,"%f %f", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2, testFlywheelSpeed);
 			//controller.print(0,0,"%f", leftE.get_value());
 		}
 		count += 1;
@@ -224,19 +224,21 @@ void opcontrol() {
 		}
 
 		if(controller.get_digital(DIGITAL_R1)){
-			indexer.move(127);
+			indexer.move(80);
 		}
 		else{
 			indexer.move(0);
 		}
 
 		if(controller.get_digital(DIGITAL_L1)){
+			rollerToggle = false;
 			intake.move(127);
 		}
 		else if(controller.get_digital(DIGITAL_L2)){
+			rollerToggle = false;
 			intake.move(-127);
 		}
-		else{
+		else if(rollerToggle == false){
 			intake.move(0);
 		}
 
