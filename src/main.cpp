@@ -147,11 +147,10 @@ void opcontrol() {
 	double testFlywheelSpeed = 470;
 
 	int selectedTeam = 1;
-	bool intakeOpticalSensorRed = false;
-	bool intakeOpticalSensorBlue = false;
 	double get_hue;
 	bool rollerToggle = false;
 	bool flywheelToggle = false;
+	bool index = false;
 
 	while (true) {
 
@@ -163,11 +162,11 @@ void opcontrol() {
 		}
 
 		if(selectedTeam == -1){
-			controller.print(1,1,"Blue");
+			controller.print(2,1,"Blue");
 		}
 
 		if(selectedTeam == 1){
-			controller.print(1,1,"Red");
+			controller.print(2,1,"Red");
 		}
 
 		//Optical Sensor Code
@@ -193,18 +192,6 @@ void opcontrol() {
 			}
 		}
 		
-
-		//Flywheel Toggle
-		if (!(count % 5)){ //Printing average RPMS on to the screen
-			//controller.print(0,0,"%f %f", midFlywheel.get_actual_velocity(), outFlywheel.get_actual_velocity());
-			controller.print(0,0,"%f %f", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2, testFlywheelSpeed);
-			//controller.print(0,0,"%f", leftE.get_value());
-		}
-		count += 1;
-		/*pros::lcd::print(3, "%f", leftE.get_value());
-		pros::lcd::print(4, "%f", midE.get_value());
-		pros::lcd::print(5, "%f", rightE.get_value());*/
-		//std::cout << leftE.get_value() << std::endl;
 	
 		if(controller.get_digital_new_press(DIGITAL_X)){
 			testFlywheelSpeed += 10;
@@ -223,11 +210,19 @@ void opcontrol() {
 			flywheelBrake();
 		}
 
-		if(controller.get_digital(DIGITAL_R1)){
-			indexer.move(80);
-		}
-		else{
-			indexer.move(0);
+		if(controller.get_digital_new_press(DIGITAL_R1)){
+			index = true;
+			if (index == true){
+				indexer.move_relative(357*3,435);
+				testFlywheelSpeed += 60;
+				index = false;
+				pros::delay(10);
+				testFlywheelSpeed -= 60;
+			}
+			else if (index == false){
+				indexer.move(0);
+				
+			}
 		}
 
 		if(controller.get_digital(DIGITAL_L1)){
@@ -284,4 +279,16 @@ void opcontrol() {
 		// 		intakeOpticalSensorBlue = !intakeOpticalSensorBlue;
 		// 	}
 		// }
+
+		/*pros::lcd::print(3, "%f", leftE.get_value());
+		pros::lcd::print(4, "%f", midE.get_value());
+		pros::lcd::print(5, "%f", rightE.get_value());*/
+		//std::cout << leftE.get_value() << std::endl;
+
+		// //Flywheel Toggle
+		// if (!(count % 25)){ //Printing average RPMS on to the screen
+		// 	controller.print(0,0,"%f ", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2);
+		// }
+		// count ++;
+		// pros::delay(2);
 }
