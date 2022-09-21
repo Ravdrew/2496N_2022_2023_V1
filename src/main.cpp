@@ -5,7 +5,7 @@
 #include "flywheel.h"
 #include <cmath>
 #define OPTICAL_PORT 1
-#define ONE_DISK_ROTATION 365
+#define ONE_DISK_ROTATION 360
 
 
 /**
@@ -248,8 +248,7 @@ void opcontrol() {
 		lPwr = (abs(lYaxis) > 2) ? (sgn(lYaxis) * (1.2*pow(1.03566426, sgn(lYaxis)*lYaxis) - 1.2 + sgn(lYaxis)*0.2*lYaxis)) : 0;
 		
 		chas_move(lPwr, rPwr);
-	
-
+		
 		pros::delay(10);
 	}
 
