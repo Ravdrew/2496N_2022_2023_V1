@@ -1,4 +1,5 @@
 #include "main.h"
+#include "piston.h"
 
 #ifndef ROBOT_H_
 #define ROBOT_H_
@@ -21,6 +22,8 @@ extern pros::ADIEncoder midE;
 
 extern pros::Optical optical_sensor;
 extern pros::c::optical_rgb_s_t rgb_value;
+
+extern Piston end_game_left;
 
 extern pros::Imu imu;
 extern pros::ADIDigitalOut chainClaw;

@@ -5,6 +5,7 @@
 #include "flywheel.h"
 #include <cmath>
 #define OPTICAL_PORT 1
+#define ONE_DISK_ROTATION 365
 
 
 /**
@@ -144,7 +145,7 @@ void opcontrol() {
 	bool intake_power = false;
 	int intake_direction = 1;
 	bool flywheel_on = false;
-	double testFlywheelSpeed = 470;
+	double testFlywheelSpeed = 450;
 
 	int selectedTeam = 1;
 	double get_hue;
@@ -162,16 +163,16 @@ void opcontrol() {
 		}
 
 		if(selectedTeam == -1){
-			controller.print(2,1,"Blue");
+			controller.print(1,1,"Blue %f", testFlywheelSpeed);
 		}
 
 		if(selectedTeam == 1){
-			controller.print(2,1,"Red");
+			controller.print(1,1,"Red %f", testFlywheelSpeed);
 		}
 
 		//Optical Sensor Code
 		
-		if (controller.get_digital_new_press(DIGITAL_R2)){
+		if (controller.get_digital_new_press(DIGITAL_L2)){
 			rollerToggle = !rollerToggle;
 		}
 		if(rollerToggle == true){
@@ -210,26 +211,25 @@ void opcontrol() {
 			flywheelBrake();
 		}
 
-		if(controller.get_digital_new_press(DIGITAL_R1)){
-			index = true;
-			if (index == true){
-				indexer.move_relative(357*3,435);
-				testFlywheelSpeed += 60;
-				index = false;
-				pros::delay(10);
-				testFlywheelSpeed -= 60;
-			}
-			else if (index == false){
-				indexer.move(0);
-				
-			}
+		if(controller.get_digital_new_press(DIGITAL_R2)){
+			indexer.move_relative(ONE_DISK_ROTATION,350);
 		}
+		else if(controller.get_digital_new_press(DIGITAL_R1)){
+			indexer.move_relative(ONE_DISK_ROTATION*3,350);
+		}
+		/*else if(controller.get_digital(DIGITAL_R1)){
+			indexer.move(127);
+		}*/
+		/*else{
+			indexer.move(0);
+		}*/
+
 
 		if(controller.get_digital(DIGITAL_L1)){
 			rollerToggle = false;
 			intake.move(127);
 		}
-		else if(controller.get_digital(DIGITAL_L2)){
+		else if(controller.get_digital(DIGITAL_LEFT)){
 			rollerToggle = false;
 			intake.move(-127);
 		}
