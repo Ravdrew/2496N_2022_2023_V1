@@ -192,7 +192,6 @@ void opcontrol() {
 				}
 			}
 		}
-		
 	
 		if(controller.get_digital_new_press(DIGITAL_X)){
 			testFlywheelSpeed += 10;
@@ -200,7 +199,6 @@ void opcontrol() {
 		else if(controller.get_digital_new_press(DIGITAL_A)){
 			testFlywheelSpeed -= 10;
 		}
-
 		if (controller.get_digital_new_press(DIGITAL_DOWN)){ //Spin up
 			flywheelToggle = !flywheelToggle;
 		}
@@ -247,7 +245,7 @@ void opcontrol() {
 		rPwr = (abs(rYaxis) > 2) ? (sgn(rYaxis) * (1.2*pow(1.03566426, sgn(rYaxis)*rYaxis) - 1.2 + sgn(rYaxis)*0.2*rYaxis)) : 0;
 		lPwr = (abs(lYaxis) > 2) ? (sgn(lYaxis) * (1.2*pow(1.03566426, sgn(lYaxis)*lYaxis) - 1.2 + sgn(lYaxis)*0.2*lYaxis)) : 0;
 		
-		chas_move(lPwr, rPwr);
+		chas_move(-rPwr, -lPwr);
 		
 		pros::delay(10);
 	}
