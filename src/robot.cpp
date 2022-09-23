@@ -6,17 +6,12 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);//gu
 pros::Motor leftFront(5, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::Motor leftBack(6, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::Motor rightFront(20, MOTOR_GEARSET_6, true, MOTOR_ENCODER_DEGREES);
-pros::Motor rightBack(4, MOTOR_GEARSET_6, true, MOTOR_ENCODER_DEGREES);
+pros::Motor rightBack(4, MOTOR_GEARSET_6, true, MOTOR_ENCODER_DEGREES); 
 pros::Motor intake(15, MOTOR_GEARSET_6, true, MOTOR_ENCODER_DEGREES);
 pros::Motor indexer(17, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::Motor midFlywheel(11, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::Motor outFlywheel(16, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 
-//hello
-//this is gerald
-//i come to you from 2042
-//i need to warn you about the inevitable future
-//[redacted]
 pros::Optical optical_sensor(8);
 pros::c::optical_rgb_s_t rgb_value;
 // pros::Limit limit_sensor(10);

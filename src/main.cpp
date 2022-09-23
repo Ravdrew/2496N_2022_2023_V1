@@ -152,9 +152,10 @@ void opcontrol() {
 	bool rollerToggle = false;
 	bool flywheelToggle = false;
 	bool index = false;
+	bool flywheelBurst = false;
 
 	while (true) {
-
+		
 		//Selecting team for optical sensor
 		if(controller.get_digital_new_press(DIGITAL_UP)){
 			controller.clear();
@@ -163,11 +164,11 @@ void opcontrol() {
 		}
 
 		if(selectedTeam == -1){
-			controller.print(1,1,"Blue %f", testFlywheelSpeed);
+			controller.print(0,1,"Blue %f", testFlywheelSpeed);
 		}
 
 		if(selectedTeam == 1){
-			controller.print(1,1,"Red %f", testFlywheelSpeed);
+			controller.print(0,1,"Red %f", testFlywheelSpeed);
 		}
 
 		//Optical Sensor Code
@@ -212,9 +213,18 @@ void opcontrol() {
 		if(controller.get_digital_new_press(DIGITAL_R2)){
 			indexer.move_relative(ONE_DISK_ROTATION,350);
 		}
-		else if(controller.get_digital_new_press(DIGITAL_R1)){
-			indexer.move_relative(ONE_DISK_ROTATION*3,350);
-		}
+		if(controller.get_digital_new_press(DIGITAL_R1)){
+				testFlywheelSpeed += 50;
+				pros::delay(10);
+				indexer.move_relative(ONE_DISK_ROTATION*3, 450);
+				pros::delay(350);
+				testFlywheelSpeed -= 50;
+			}
+		
+		// else if(controller.get_digital_new_press(DIGITAL_R1)){
+		// 	indexer.move_relative(ONE_DISK_ROTATION*3, 360);
+		// }
+	
 		/*else if(controller.get_digital(DIGITAL_R1)){
 			indexer.move(127);
 		}*/
