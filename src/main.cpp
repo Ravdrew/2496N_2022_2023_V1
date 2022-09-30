@@ -7,7 +7,7 @@
 #include <cmath>
 #define OPTICAL_PORT 1
 #define ONE_DISK_ROTATION 360
-#define FLYWHEEL_SPEED_TARGET 430
+#define FLYWHEEL_SPEED_TARGET 440
 
 
 /**
@@ -137,7 +137,7 @@ void tripleShot(void* param){
 }
 
 void singleShot(void* param){
-	indexer.move_relative(ONE_DISK_ROTATION, 400);
+	indexer.move_relative(ONE_DISK_ROTATION, 380);
 	pros::delay(400);
 	rumbleNeeded = true;
 	diskShot++;
@@ -221,10 +221,10 @@ void opcontrol() {
 		}
 	
 		if(controller.get_digital_new_press(DIGITAL_X)){
-			testFlywheelSpeed += 10;
+			testFlywheelSpeed += 5;
 		}
 		else if(controller.get_digital_new_press(DIGITAL_A)){
-			testFlywheelSpeed -= 10;
+			testFlywheelSpeed -= 5;
 		}
 		if (controller.get_digital_new_press(DIGITAL_DOWN)){ //Spin up
 			flywheelAllowed = !flywheelAllowed;
