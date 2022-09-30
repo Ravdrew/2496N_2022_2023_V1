@@ -3,9 +3,11 @@
 #include "movement.h"
 #include "PID.h"
 #include "flywheel.h"
+#include "autons.h"
 #include <cmath>
 #define OPTICAL_PORT 1
 #define ONE_DISK_ROTATION 360
+#define FLYWHEEL_SPEED_TARGET 430
 
 
 /**
@@ -56,27 +58,14 @@ void disabled() {
  * starts.
  */
 
-// int selectedAuto = 1;
-
 // bool switchPressed = false;
-// bool resetNeeded = false;
+bool resetNeeded = false;
 
-// int timer = 0;
+int timer = 0;
+int selectedAuto = 1;
 
 void autonSelect(){
-	/*if(plus.get_value() && !switchPressed){
-		switchPressed = true;
-		resetNeeded = true;
-		selectedAuto += 1;
-	}
-	else if(plus.get_value() == false){
-		switchPressed = false;
-	}
-
-	if(selectedAuto > MAX_AUTOS){
-		resetNeeded = true;
-		selectedAuto = 1;
-	}
+	
 	
 	if (!(timer % 5)) {
 		if(resetNeeded){
@@ -91,7 +80,8 @@ void autonSelect(){
 		else if(selectedAuto == 6) controller.set_text(1, 0, "Prog Skills");
 		else if(selectedAuto == 7) controller.set_text(1, 0, "No Auton");
 	}
-	timer++;*/
+	pros::delay(10);
+	timer++;
 }
 
 void competition_initialize() {
@@ -130,6 +120,36 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
+
+/*
+	1) fix vibrations
+	2) add auton selector
+*/
+bool indexToggle = false;
+bool rumbleNeeded = false;
+int diskShot = 0;
+
+void tripleShot(void* param){
+	indexer.move_relative(ONE_DISK_ROTATION*3, 400);
+	pros::delay(800);
+	rumbleNeeded = true;
+	indexToggle = false;
+}
+
+void singleShot(void* param){
+	indexer.move_relative(ONE_DISK_ROTATION, 400);
+	pros::delay(400);
+	rumbleNeeded = true;
+	diskShot++;
+	if(lineFollower.get_value() < 400 && lineFollower.get_value() > 0){
+		diskShot = 0;
+		indexToggle = true;
+	}
+	if(diskShot > 1){
+		indexToggle = false;
+	}
+}
+
 void opcontrol() {
 	controller.clear();
 	leftFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
@@ -142,15 +162,15 @@ void opcontrol() {
 	midFlywheel.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 
 	int count = 0;
+	int detectedTime = 0;
 	bool intake_power = false;
 	int intake_direction = 1;
-	bool flywheel_on = false;
-	double testFlywheelSpeed = 450;
+	double testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
 
 	int selectedTeam = 1;
 	double get_hue;
 	bool rollerToggle = false;
-	bool flywheelToggle = false;
+	bool flywheelAllowed = true;
 	bool index = false;
 	bool flywheelBurst = false;
 
@@ -159,16 +179,22 @@ void opcontrol() {
 		//Selecting team for optical sensor
 		if(controller.get_digital_new_press(DIGITAL_UP)){
 			controller.clear();
-			pros::delay(50);
 			selectedTeam = selectedTeam * -1;
 		}
 
-		if(selectedTeam == -1){
-			controller.print(0,1,"Blue %f", testFlywheelSpeed);
-		}
+		if(!(count % 5)){
+			if(rumbleNeeded && (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2 > FLYWHEEL_SPEED_TARGET - 5){
+				controller.rumble("-");
+				rumbleNeeded = false;
+			}
 
-		if(selectedTeam == 1){
-			controller.print(0,1,"Red %f", testFlywheelSpeed);
+			else if(selectedTeam == -1){
+				controller.print(0,1,"Blue %f", testFlywheelSpeed);
+			}
+
+			else if(selectedTeam == 1){
+				controller.print(0,1,"Red %f", testFlywheelSpeed);
+			}
 		}
 
 		//Optical Sensor Code
@@ -201,26 +227,46 @@ void opcontrol() {
 			testFlywheelSpeed -= 10;
 		}
 		if (controller.get_digital_new_press(DIGITAL_DOWN)){ //Spin up
-			flywheelToggle = !flywheelToggle;
+			flywheelAllowed = !flywheelAllowed;
 		}
-		if(flywheelToggle == true){
+		if(flywheelAllowed == true && indexToggle){
 			flywheelMove(testFlywheelSpeed);
 		}
-		else if(flywheelToggle == false){ //Spin down
+		else if(flywheelAllowed == false){ //Spin down
 			flywheelBrake();
 		}
 
-		if(controller.get_digital_new_press(DIGITAL_R2)){
-			indexer.move_relative(ONE_DISK_ROTATION,350);
+		if(lineFollower.get_value() < 600 && lineFollower.get_value() > 0){
+			detectedTime++;
 		}
-		if(controller.get_digital_new_press(DIGITAL_R1)){
-				testFlywheelSpeed += 50;
-				pros::delay(10);
-				indexer.move_relative(ONE_DISK_ROTATION*3, 450);
-				pros::delay(350);
-				testFlywheelSpeed -= 50;
+		else{
+			detectedTime = 0;
+		}
+
+		if(detectedTime > 40){
+			indexToggle = true;
+		}
+
+		// if(controller.get_digital_new_press(DIGITAL_R2)){
+		// 	indexer.move_relative(ONE_DISK_ROTATION,400);
+			
+		// }
+		//controller.get_digital_new_press(DIGITAL_R1) || controller.get_digital_new_press(DIGITAL_R2)
+		if(indexToggle && controller.get_digital_new_press(DIGITAL_R1)){
+			pros::Task tripleShotCall(tripleShot);
+		}
+		else if(indexToggle && controller.get_digital_new_press(DIGITAL_R2)){
+			pros::Task singleShotCall(singleShot);
+		}
+		else{
+			if(controller.get_digital_new_press(DIGITAL_R1) || controller.get_digital_new_press(DIGITAL_R2)){
+				indexToggle = true;
 			}
-		
+		}
+
+		//std::cout << "freeze" << freezeTwoDiskIn << std::endl;
+		//std::cout << "two" << twoDiskIn << std::endl;
+
 		// else if(controller.get_digital_new_press(DIGITAL_R1)){
 		// 	indexer.move_relative(ONE_DISK_ROTATION*3, 360);
 		// }
@@ -255,9 +301,10 @@ void opcontrol() {
 		rPwr = (abs(rYaxis) > 2) ? (sgn(rYaxis) * (1.2*pow(1.03566426, sgn(rYaxis)*rYaxis) - 1.2 + sgn(rYaxis)*0.2*rYaxis)) : 0;
 		lPwr = (abs(lYaxis) > 2) ? (sgn(lYaxis) * (1.2*pow(1.03566426, sgn(lYaxis)*lYaxis) - 1.2 + sgn(lYaxis)*0.2*lYaxis)) : 0;
 		
-		chas_move(-rPwr, -lPwr);
+		chas_move(lPwr, rPwr);
 		
 		pros::delay(10);
+		count++;
 	}
 
 	

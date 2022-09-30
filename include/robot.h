@@ -31,6 +31,7 @@ extern pros::ADIDigitalOut jSClamp;
 extern pros::ADIDigitalOut stick;
 extern pros::ADIDigitalOut hood;
 
+extern pros::ADIAnalogIn lineFollower;
 void reset_encoders();
 
 #endif

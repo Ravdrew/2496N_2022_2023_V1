@@ -224,12 +224,17 @@ void absturnTimed(float abstarget, float timer_amt, bool ask_slew, float slew_ra
        chas_move(voltage, -voltage);
        printf("error: %f\r\n", (imu.get_rotation()));
        if(abs(abstarget - position) <= 230) timer++;
-       if (abs(abstarget - position) <= 1.5) count++;
-       if (count >= 30 || timer >= timer_amt) break;
+       if(abs(abstarget - position) <= 1.5) count++;
+       if(count >= 30 || timer >= timer_amt) break;
  
        pros::delay(10);
    }
    chas_move(0,0);
    printf("count: %d\r\n", (count));
+}
+
+void moveOutakeTill(int speed, bool red){
+
+
 }
 
