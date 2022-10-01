@@ -7,7 +7,7 @@
 #include <cmath>
 #define OPTICAL_PORT 1
 #define ONE_DISK_ROTATION 360
-#define FLYWHEEL_SPEED_TARGET 440
+#define FLYWHEEL_SPEED_TARGET 450
 
 
 /**
@@ -126,20 +126,17 @@ void autonomous() {
 	2) add auton selector
 */
 bool indexToggle = false;
-bool rumbleNeeded = false;
 int diskShot = 0;
 
 void tripleShot(void* param){
 	indexer.move_relative(ONE_DISK_ROTATION*3, 400);
 	pros::delay(800);
-	rumbleNeeded = true;
 	indexToggle = false;
 }
 
 void singleShot(void* param){
 	indexer.move_relative(ONE_DISK_ROTATION, 380);
 	pros::delay(400);
-	rumbleNeeded = true;
 	diskShot++;
 	if(lineFollower.get_value() < 400 && lineFollower.get_value() > 0){
 		diskShot = 0;
@@ -171,7 +168,7 @@ void opcontrol() {
 	double get_hue;
 	bool rollerToggle = false;
 	bool flywheelAllowed = true;
-	bool index = false;
+	bool prev_index;
 	bool flywheelBurst = false;
 
 	while (true) {
@@ -183,12 +180,7 @@ void opcontrol() {
 		}
 
 		if(!(count % 5)){
-			if(rumbleNeeded && (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2 > FLYWHEEL_SPEED_TARGET - 5){
-				controller.rumble("-");
-				rumbleNeeded = false;
-			}
-
-			else if(selectedTeam == -1){
+			if(selectedTeam == -1){
 				controller.print(0,1,"Blue %f", testFlywheelSpeed);
 			}
 
@@ -203,7 +195,7 @@ void opcontrol() {
 			rollerToggle = !rollerToggle;
 		}
 		if(rollerToggle == true){
-			optical_sensor.set_led_pwm(90);
+			optical_sensor.set_led_pwm(100);
 			if(selectedTeam == -1){
 				intake.move(-127);
 				if(optical_sensor.get_hue() >= 100){
@@ -229,12 +221,9 @@ void opcontrol() {
 		if (controller.get_digital_new_press(DIGITAL_DOWN)){ //Spin up
 			flywheelAllowed = !flywheelAllowed;
 		}
-		if(flywheelAllowed == true && indexToggle){
-			flywheelMove(testFlywheelSpeed);
-		}
-		else if(flywheelAllowed == false){ //Spin down
-			flywheelBrake();
-		}
+		
+		if(flywheelAllowed == false) flywheelBrake();
+		else if(indexToggle) flywheelMove(testFlywheelSpeed);
 
 		if(lineFollower.get_value() < 600 && lineFollower.get_value() > 0){
 			detectedTime++;
@@ -305,6 +294,8 @@ void opcontrol() {
 		
 		pros::delay(10);
 		count++;
+
+		prev_index = indexToggle;
 	}
 
 	
