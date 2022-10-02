@@ -7,7 +7,7 @@
 #include <cmath>
 #define OPTICAL_PORT 1
 #define ONE_DISK_ROTATION 360
-#define FLYWHEEL_SPEED_TARGET 450
+#define FLYWHEEL_SPEED_TARGET 437
 
 
 /**
@@ -126,24 +126,25 @@ void autonomous() {
 	2) add auton selector
 */
 bool indexToggle = false;
-int diskShot = 0;
+bool skipStop = false;
 
 void tripleShot(void* param){
-	indexer.move_relative(ONE_DISK_ROTATION*3, 400);
-	pros::delay(800);
+	indexer.move_relative(ONE_DISK_ROTATION*3, 390);
+	pros::delay(400);
 	indexToggle = false;
 }
 
 void singleShot(void* param){
-	indexer.move_relative(ONE_DISK_ROTATION, 380);
-	pros::delay(400);
-	diskShot++;
 	if(lineFollower.get_value() < 400 && lineFollower.get_value() > 0){
-		diskShot = 0;
-		indexToggle = true;
+		skipStop = true;
 	}
-	if(diskShot > 1){
+	indexer.move_relative(ONE_DISK_ROTATION, 400);
+	pros::delay(200);
+	if(skipStop == false){
 		indexToggle = false;
+	}
+	else{
+		skipStop = false;
 	}
 }
 
@@ -168,7 +169,6 @@ void opcontrol() {
 	double get_hue;
 	bool rollerToggle = false;
 	bool flywheelAllowed = true;
-	bool prev_index;
 	bool flywheelBurst = false;
 
 	while (true) {
@@ -222,7 +222,7 @@ void opcontrol() {
 			flywheelAllowed = !flywheelAllowed;
 		}
 		
-		if(flywheelAllowed == false) flywheelBrake();
+		if(flywheelAllowed == false || indexToggle == false) flywheelBrake();
 		else if(indexToggle) flywheelMove(testFlywheelSpeed);
 
 		if(lineFollower.get_value() < 600 && lineFollower.get_value() > 0){
@@ -294,8 +294,6 @@ void opcontrol() {
 		
 		pros::delay(10);
 		count++;
-
-		prev_index = indexToggle;
 	}
 
 	
