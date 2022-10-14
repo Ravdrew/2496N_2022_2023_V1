@@ -3,6 +3,7 @@
 
 #ifndef ROBOT_H_
 #define ROBOT_H_
+#define ONE_DISK_ROTATION 120
 extern pros::Controller controller;
 extern pros::Motor leftFront; 
 extern pros::Motor leftMid;
@@ -13,25 +14,18 @@ extern pros::Motor rightBack;
 extern pros::Motor chainBar;
 extern pros::Motor intake;
 extern pros::Motor indexer;
-extern pros::Motor midFlywheel; //4
-extern pros::Motor outFlywheel; //10
+extern pros::Motor midFlywheel;
+extern pros::Motor outFlywheel;
 
-extern pros::ADIEncoder leftE;
-extern pros::ADIEncoder rightE;
-extern pros::ADIEncoder midE;
-
-extern pros::Optical optical_sensor;
-extern pros::c::optical_rgb_s_t rgb_value;
-
-extern Piston end_game_left;
+extern Piston endBack;
 
 extern pros::Imu imu;
-extern pros::ADIDigitalOut chainClaw;
-extern pros::ADIDigitalOut jSClamp;
-extern pros::ADIDigitalOut stick;
-extern pros::ADIDigitalOut hood;
+
+extern pros::ADIPotentiometer pot;
 
 extern pros::ADIAnalogIn lineFollower;
+
+
 void reset_encoders();
 
 #endif

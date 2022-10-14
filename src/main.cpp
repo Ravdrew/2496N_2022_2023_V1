@@ -6,8 +6,9 @@
 #include "autons.h"
 #include <cmath>
 #define OPTICAL_PORT 1
-#define ONE_DISK_ROTATION 360
-#define FLYWHEEL_SPEED_TARGET 437
+#define FLYWHEEL_SPEED_TARGET 434
+#define UP_MOST 23.0476
+#define DOWN_MOST 111.451
 
 
 /**
@@ -63,29 +64,44 @@ bool resetNeeded = false;
 
 int timer = 0;
 int selectedAuto = 1;
+int prevSelectedAuto = 1;
 
-void autonSelect(){
-	
-	
-	if (!(timer % 5)) {
-		if(resetNeeded){
-			resetNeeded = false;
-			controller.clear();
-		}
-		if(selectedAuto == 1) controller.set_text(1, 0, "AWP"); //will be awp
-		else if(selectedAuto == 2) controller.set_text(1, 0, "Plat Down");
-		else if(selectedAuto == 3) controller.set_text(1, 0, "Line Side");
-		else if(selectedAuto == 4) controller.set_text(1, 0, "Elims");
-		else if(selectedAuto == 5) controller.set_text(1, 0, "Rush Mid");
-		else if(selectedAuto == 6) controller.set_text(1, 0, "Prog Skills");
-		else if(selectedAuto == 7) controller.set_text(1, 0, "No Auton");
-	}
-	pros::delay(10);
-	timer++;
-}
+double curr_ang;
 
 void competition_initialize() {
-	
+	controller.clear();
+	while(true){
+		prevSelectedAuto = selectedAuto;
+		curr_ang = pot.get_angle();
+		if(curr_ang > 5 && curr_ang < 75) selectedAuto = 1;
+		else if (curr_ang >  80 && curr_ang < 150) selectedAuto = 2;
+		else if(curr_ang > 155 && curr_ang < 225) selectedAuto = 3;
+		else if(curr_ang > 235) selectedAuto = 0;//while(Andres == "")
+
+		//std::cout << "curr_ang: " << curr_ang << std::endl;
+		//std::cout << "selected: " << selectedAuto << std::endl;
+
+		if (!(timer % 5)) {
+			switch(selectedAuto) {
+				case 0:
+					controller.print(1, 0, "NoA");
+					break;
+				case 1:
+					controller.print(1, 0, "AWP");
+					break;
+				case 2:
+					controller.print(1, 0, "Rol");
+					break;
+				case 3:
+					controller.print(1, 0, "Mid");
+					break;
+				default:
+					controller.print(1, 0, "SEL");
+			}
+		}
+		pros::delay(10);
+		timer++;
+	}
 }
 
 /**
@@ -100,10 +116,25 @@ void competition_initialize() {
  * from where it left off.
  */
 
-
-
 void autonomous() {
 	start_heading = imu.get_rotation();
+	switch(selectedAuto) {
+		case 0:
+			noAuton();
+			break;
+		case 1:
+			AWP();
+			break;
+		case 2:
+			rollerSide();
+			break;
+		case 3:
+			mid();
+			break;
+		default:
+			noAuton();
+	}
+	
 }
 
 /**
@@ -129,19 +160,22 @@ bool indexToggle = false;
 bool skipStop = false;
 
 void tripleShot(void* param){
-	indexer.move_relative(ONE_DISK_ROTATION*3, 390);
-	pros::delay(400);
+	indexer.move_relative(ONE_DISK_ROTATION*3, 123);
+	pros::delay(600);
 	indexToggle = false;
 }
 
 void singleShot(void* param){
+	/*while(true){
+		bool AndresCode = false;
+	}*/
 	if(lineFollower.get_value() < 400 && lineFollower.get_value() > 0){
 		skipStop = true;
 	}
-	indexer.move_relative(ONE_DISK_ROTATION, 400);
-	pros::delay(200);
+	indexer.move_relative(ONE_DISK_ROTATION, 170);
+	pros::delay(450);
 	if(skipStop == false){
-		indexToggle = false;
+		indexToggle = false;//for 
 	}
 	else{
 		skipStop = false;
@@ -169,8 +203,7 @@ void opcontrol() {
 	double get_hue;
 	bool rollerToggle = false;
 	bool flywheelAllowed = true;
-	bool flywheelBurst = false;
-
+	
 	while (true) {
 		
 		//Selecting team for optical sensor
@@ -182,16 +215,19 @@ void opcontrol() {
 		if(!(count % 5)){
 			if(selectedTeam == -1){
 				controller.print(0,1,"Blue %f", testFlywheelSpeed);
+				//controller.print(0,0,"%f ", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2);
 			}
 
 			else if(selectedTeam == 1){
 				controller.print(0,1,"Red %f", testFlywheelSpeed);
+				//controller.print(0,0,"%f ", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2);
 			}
 		}
 
 		//Optical Sensor Code
 		
-		if (controller.get_digital_new_press(DIGITAL_L2)){
+
+		/*if (controller.get_digital_new_press(DIGITAL_L2)){
 			rollerToggle = !rollerToggle;
 		}
 		if(rollerToggle == true){
@@ -210,13 +246,19 @@ void opcontrol() {
 					rollerToggle = !rollerToggle;
 				}
 			}
-		}
+		}*/
 	
 		if(controller.get_digital_new_press(DIGITAL_X)){
-			testFlywheelSpeed += 5;
+			testFlywheelSpeed += 3;
 		}
 		else if(controller.get_digital_new_press(DIGITAL_A)){
-			testFlywheelSpeed -= 5;
+			testFlywheelSpeed -= 3;
+		}
+		else if(controller.get_digital_new_press(DIGITAL_B)){
+			testFlywheelSpeed = 410;
+		}
+		else if(controller.get_digital_new_press(DIGITAL_Y)){
+			testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
 		}
 		if (controller.get_digital_new_press(DIGITAL_DOWN)){ //Spin up
 			flywheelAllowed = !flywheelAllowed;
@@ -241,6 +283,7 @@ void opcontrol() {
 			
 		// }
 		//controller.get_digital_new_press(DIGITAL_R1) || controller.get_digital_new_press(DIGITAL_R2)
+		
 		if(indexToggle && controller.get_digital_new_press(DIGITAL_R1)){
 			pros::Task tripleShotCall(tripleShot);
 		}
@@ -268,13 +311,16 @@ void opcontrol() {
 		}*/
 
 
-		if(controller.get_digital(DIGITAL_L1)){
+		if(controller.get_digital_new_press(DIGITAL_L1) && controller.get_digital_new_press(DIGITAL_L2)){
+			endBack.open();
+		}
+		else if(controller.get_digital(DIGITAL_L1)){
 			rollerToggle = false;
 			intake.move(127);
 		}
-		else if(controller.get_digital(DIGITAL_LEFT)){
+		else if(controller.get_digital(DIGITAL_L2)){
 			rollerToggle = false;
-			intake.move(-127);
+			intake.move(-80);
 		}
 		else if(rollerToggle == false){
 			intake.move(0);
@@ -330,7 +376,7 @@ void opcontrol() {
 
 		// //Flywheel Toggle
 		// if (!(count % 25)){ //Printing average RPMS on to the screen
-		// 	controller.print(0,0,"%f ", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2);
+		// 
 		// }
 		// count ++;
 		// pros::delay(2);

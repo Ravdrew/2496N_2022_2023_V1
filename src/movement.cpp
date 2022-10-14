@@ -1,10 +1,9 @@
 #include "main.h"
 #include "PID.h"
-#include "movement.h"
 #include "robot.h"
-#define STRAIGHT_KP 0.38 //0.39 0.5
-#define STRAIGHT_KI 0.07 //0.15
-#define STRAIGHT_KD 0.0
+#define STRAIGHT_KP 0.25 //0.39 0.5
+#define STRAIGHT_KI 0.15 //0.15
+#define STRAIGHT_KD 1.9
 #define QUICK_KP 0.45 //0.39 0.5
 #define QUICK_KI 0.05 //0.15
 #define QUICK_KD 0.0
@@ -12,7 +11,7 @@
 #define TURN_KI 0.15 //0.4
 #define TURN_KD 0.0
 
-#define STRAIGHT_INTEGRAL_KICK_IN 50
+#define STRAIGHT_INTEGRAL_KICK_IN 200
 #define STRAIGHT_MAX_INTEGRAL 100
 //Gerald was here wassup guys another year on this team lmao//
 #define TURN_INTEGRAL_KICK_IN 9
@@ -87,12 +86,12 @@ void moveTimed(float target, int timer_amt){
        if(abs(target - encoder_average) <= 50) timer++;
        if(timer > timer_amt) break;
        if (abs(target - encoder_average) <= 3) count++;
-       if (count >= 23) break;
+       if (count >= 35) break;
  
        pros::delay(10);
    }
    chas_move(0,0);
-   printf("count: %d\r\n", (count));
+   
 }
 //somos en el nave con el impostor 
 void move(float target, bool ask_slew, float slew_rate, float power_cap, float active_cap){
@@ -115,6 +114,13 @@ void move(float target, bool ask_slew, float slew_rate, float power_cap, float a
     while(true){
 
         encoder_average = (leftBack.get_position() + rightBack.get_position())/2;
+
+        printPos = target-encoder_average;
+        if (!(printTimer % 5)) {
+            //controller.clear();
+            controller.print(0,0, "%f", printPos);
+        }
+        printTimer += 1;
         
         voltage = straight.calc(target, encoder_average, STRAIGHT_INTEGRAL_KICK_IN, STRAIGHT_MAX_INTEGRAL, slew_rate, ask_slew);
 
@@ -131,12 +137,15 @@ void move(float target, bool ask_slew, float slew_rate, float power_cap, float a
         }
 
         chas_move(voltage - heading, voltage + heading); // (voltage - heading, voltage + heading)
-        if (abs(target - encoder_average) <= 3) count++;
+        std::cout << "error: " << abs(target - encoder_average) << std::endl;
+        if (abs(target - encoder_average) <= 4) count++;
         if (count >= 23) break;
 
         pros::delay(10);
     }
     
+
+    std::cout << "STOP!" << std::endl;
     chas_move(0,0);
 }
 //*skull emoji
@@ -155,7 +164,8 @@ void turn(float target, bool ask_slew, float slew_rate){
         voltage = rotate.calc(target, position, TURN_INTEGRAL_KICK_IN, TURN_MAX_INTEGRAL, slew_rate, ask_slew);
 
         chas_move(voltage, -voltage);
-        printf("error: %f\r\n", (imu.get_rotation()));
+        
+        std::cout << "error: " << abs(target - position) << std::endl;
         if (abs(target - position) <= 2) count++;
         if (count >= COUNT_CONST) break;
 
@@ -166,7 +176,6 @@ void turn(float target, bool ask_slew, float slew_rate){
     printf("count: %d\r\n", (count));
 }
 
-//void dn{}
 void absturn(float abstarget, bool ask_slew, float slew_rate, float power_cap){
     PID absRotate(TURN_KP, TURN_KI, TURN_KD);
   
@@ -201,7 +210,7 @@ void absturn(float abstarget, bool ask_slew, float slew_rate, float power_cap){
 }
 
 //who asked lol
-void absturnTimed(float abstarget, float timer_amt, bool ask_slew, float slew_rate, float power_cap){
+void absturnTimed(float abstarget, int timer_amt, bool ask_slew, float slew_rate, float power_cap){
    PID absRotateTimed(TURN_KP, TURN_KI, TURN_KD);
   
    float voltage;
@@ -233,8 +242,15 @@ void absturnTimed(float abstarget, float timer_amt, bool ask_slew, float slew_ra
    printf("count: %d\r\n", (count));
 }
 
-void moveOutakeTill(int speed, bool red){
-
-
+void shootDisks(int num){
+    for(int i = 0; i<num; i++){
+        indexer.move_relative(ONE_DISK_ROTATION, 170);
+        pros::delay(300);
+    }
 }
 
+void timedMove(int speed, int time){
+    chas_move(speed, speed);
+    pros::delay(time);
+    chas_move(0,0);
+}
