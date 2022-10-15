@@ -158,10 +158,13 @@ void autonomous() {
 */
 bool indexToggle = false;
 bool skipStop = false;
+double testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
 
 void tripleShot(void* param){
+	testFlywheelSpeed = 600;
 	indexer.move_relative(ONE_DISK_ROTATION*3, 123);
-	pros::delay(600);
+	pros::delay(620);
+	testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
 	indexToggle = false;
 }
 
@@ -197,7 +200,6 @@ void opcontrol() {
 	int detectedTime = 0;
 	bool intake_power = false;
 	int intake_direction = 1;
-	double testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
 
 	int selectedTeam = 1;
 	double get_hue;

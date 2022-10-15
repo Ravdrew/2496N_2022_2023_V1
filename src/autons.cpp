@@ -4,10 +4,14 @@
 #include "autons.h"
 
 void AWP(){
-    //move(1500, true, 6);
-    intake.move(127);
-    pros::delay(500);
+    intake.move(-60);
+    timedMove(-60, 95);
+    //pros::delay(50);
+    move(350);
     intake.move(0);
+    absturn(-130, false);
+    intake.move(127);
+    
 }
 
 void rollerSide(){

@@ -4,17 +4,17 @@
 #define STRAIGHT_KP 0.25 //0.39 0.5
 #define STRAIGHT_KI 0.15 //0.15
 #define STRAIGHT_KD 1.9
-#define QUICK_KP 0.45 //0.39 0.5
-#define QUICK_KI 0.05 //0.15
+#define QUICK_KP 0.0 //0.39 0.5
+#define QUICK_KI 0.0 //0.15
 #define QUICK_KD 0.0
-#define TURN_KP 2.3 //1.2
-#define TURN_KI 0.15 //0.4
-#define TURN_KD 0.0
+#define TURN_KP 4.0 //1.2
+#define TURN_KI 0.2 //0.4
+#define TURN_KD 12.0
 
 #define STRAIGHT_INTEGRAL_KICK_IN 200
 #define STRAIGHT_MAX_INTEGRAL 100
 //Gerald was here wassup guys another year on this team lmao//
-#define TURN_INTEGRAL_KICK_IN 9
+#define TURN_INTEGRAL_KICK_IN 6
 #define TURN_MAX_INTEGRAL 127
 
 #define COUNT_CONST 25 //23
@@ -188,20 +188,20 @@ void absturn(float abstarget, bool ask_slew, float slew_rate, float power_cap){
     controller.clear();
     
     while(true){
-        printPos = imu.get_rotation() - start_heading;
-        if (!(printTimer % 5)) {
-            //controller.clear();
-            controller.print(0,0, "%f", printPos);
-        }
-        printTimer += 1;
 
         position = std::fmod(imu.get_rotation() - start_heading, 360);
         voltage = absRotate.calc(abstarget, position, TURN_INTEGRAL_KICK_IN, TURN_MAX_INTEGRAL, slew_rate, ask_slew);
         std::abs(voltage) > power_cap ? voltage = power_cap*voltage/std::abs(voltage) : voltage = voltage;
         chas_move(voltage, -voltage);
 
-        if (abs(abstarget - position) <= 1) count++;
-        if (count >= 100) break;
+        printPos = abstarget - position;
+        if (!(printTimer % 5)) {
+            //controller.clear();
+            controller.print(0,0, "%f", printPos);
+        }
+        printTimer += 1;
+        if (abs(abstarget - position) <= 0.8) count++;
+        if (count >= 50) break;
 
         pros::delay(10);
     }
