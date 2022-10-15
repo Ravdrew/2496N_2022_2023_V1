@@ -161,9 +161,9 @@ bool skipStop = false;
 double testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
 
 void tripleShot(void* param){
-	testFlywheelSpeed = 600;
-	indexer.move_relative(ONE_DISK_ROTATION*3, 123);
-	pros::delay(620);
+	testFlywheelSpeed = 545;
+	indexer.move_relative(ONE_DISK_ROTATION*3, 120);
+	pros::delay(670);
 	testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
 	indexToggle = false;
 }
