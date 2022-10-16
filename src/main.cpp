@@ -6,7 +6,7 @@
 #include "autons.h"
 #include <cmath>
 #define OPTICAL_PORT 1
-#define FLYWHEEL_SPEED_TARGET 434
+#define FLYWHEEL_SPEED_TARGET 405 //425
 #define UP_MOST 23.0476
 #define DOWN_MOST 111.451
 
@@ -159,13 +159,18 @@ void autonomous() {
 bool indexToggle = false;
 bool skipStop = false;
 double testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
+bool rollerToggle = false;
 
 void tripleShot(void* param){
-	testFlywheelSpeed = 545;
+	rollerToggle = true;
+	intake.move(127);
+	testFlywheelSpeed = 600;
 	indexer.move_relative(ONE_DISK_ROTATION*3, 120);
 	pros::delay(670);
 	testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
-	indexToggle = false;
+	//indexToggle = false;
+	intake.move(0);
+	rollerToggle = false;
 }
 
 void singleShot(void* param){
@@ -176,7 +181,7 @@ void singleShot(void* param){
 		skipStop = true;
 	}
 	indexer.move_relative(ONE_DISK_ROTATION, 170);
-	pros::delay(450);
+	pros::delay(250);
 	if(skipStop == false){
 		indexToggle = false;//for 
 	}
@@ -203,16 +208,18 @@ void opcontrol() {
 
 	int selectedTeam = 1;
 	double get_hue;
-	bool rollerToggle = false;
 	bool flywheelAllowed = true;
+
+	bool manualIndex = false;
+
 	
 	while (true) {
 		
-		//Selecting team for optical sensor
-		if(controller.get_digital_new_press(DIGITAL_UP)){
-			controller.clear();
-			selectedTeam = selectedTeam * -1;
+		if(controller.get_digital_new_press(DIGITAL_A)){
+			AWP();
 		}
+		//Selecting team for optical sensor
+		
 
 		if(!(count % 5)){
 			if(selectedTeam == -1){
@@ -250,16 +257,12 @@ void opcontrol() {
 			}
 		}*/
 	
-		if(controller.get_digital_new_press(DIGITAL_X)){
-			testFlywheelSpeed += 3;
-		}
-		else if(controller.get_digital_new_press(DIGITAL_A)){
-			testFlywheelSpeed -= 3;
-		}
-		else if(controller.get_digital_new_press(DIGITAL_B)){
-			testFlywheelSpeed = 410;
-		}
-		else if(controller.get_digital_new_press(DIGITAL_Y)){
+		
+		
+		/*else if(controller.get_digital_new_press(DIGITAL_LEFT)){
+			testFlywheelSpeed = -600;
+		}*/
+		if(controller.get_digital_new_press(DIGITAL_Y)){
 			testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
 		}
 		if (controller.get_digital_new_press(DIGITAL_DOWN)){ //Spin up
@@ -269,7 +272,7 @@ void opcontrol() {
 		if(flywheelAllowed == false || indexToggle == false) flywheelBrake();
 		else if(indexToggle) flywheelMove(testFlywheelSpeed);
 
-		if(lineFollower.get_value() < 600 && lineFollower.get_value() > 0){
+		/*if(lineFollower.get_value() < 600 && lineFollower.get_value() > 0){
 			detectedTime++;
 		}
 		else{
@@ -278,7 +281,8 @@ void opcontrol() {
 
 		if(detectedTime > 40){
 			indexToggle = true;
-		}
+		}*/
+		indexToggle = true;
 
 		// if(controller.get_digital_new_press(DIGITAL_R2)){
 		// 	indexer.move_relative(ONE_DISK_ROTATION,400);
@@ -286,6 +290,23 @@ void opcontrol() {
 		// }
 		//controller.get_digital_new_press(DIGITAL_R1) || controller.get_digital_new_press(DIGITAL_R2)
 		
+
+		if(controller.get_digital_new_press(DIGITAL_UP)){
+			manualIndex = !manualIndex;
+		}
+
+		if(manualIndex){
+			if(controller.get_digital(DIGITAL_LEFT)){
+				indexer.move(-60);
+			}
+			else if(controller.get_digital(DIGITAL_RIGHT)){
+				indexer.move(60);
+			}
+			else{
+				indexer.move(0);
+			}
+		}
+
 		if(indexToggle && controller.get_digital_new_press(DIGITAL_R1)){
 			pros::Task tripleShotCall(tripleShot);
 		}
@@ -322,7 +343,7 @@ void opcontrol() {
 		}
 		else if(controller.get_digital(DIGITAL_L2)){
 			rollerToggle = false;
-			intake.move(-80);
+			intake.move(-127);
 		}
 		else if(rollerToggle == false){
 			intake.move(0);
