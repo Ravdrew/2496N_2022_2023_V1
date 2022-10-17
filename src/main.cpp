@@ -6,7 +6,7 @@
 #include "autons.h"
 #include <cmath>
 #define OPTICAL_PORT 1
-#define FLYWHEEL_SPEED_TARGET 405 //425
+#define FLYWHEEL_SPEED_TARGET 406 //425
 #define UP_MOST 23.0476
 #define DOWN_MOST 111.451
 
@@ -164,9 +164,9 @@ bool rollerToggle = false;
 void tripleShot(void* param){
 	rollerToggle = true;
 	intake.move(127);
-	testFlywheelSpeed = 600;
-	indexer.move_relative(ONE_DISK_ROTATION*3, 120);
-	pros::delay(670);
+	testFlywheelSpeed = 580;
+	indexer.move_relative(ONE_DISK_ROTATION*2, 120);
+	pros::delay(550);
 	testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
 	//indexToggle = false;
 	intake.move(0);
@@ -181,13 +181,13 @@ void singleShot(void* param){
 		skipStop = true;
 	}
 	indexer.move_relative(ONE_DISK_ROTATION, 170);
-	pros::delay(250);
-	if(skipStop == false){
+	//pros::delay(250);
+	/*if(skipStop == false){
 		indexToggle = false;//for 
 	}
 	else{
 		skipStop = false;
-	}
+	}*/
 }
 
 void opcontrol() {
@@ -215,9 +215,9 @@ void opcontrol() {
 	
 	while (true) {
 		
-		if(controller.get_digital_new_press(DIGITAL_A)){
-			AWP();
-		}
+		/*if(controller.get_digital_new_press(DIGITAL_A)){
+			mid();
+		}*.
 		//Selecting team for optical sensor
 		
 

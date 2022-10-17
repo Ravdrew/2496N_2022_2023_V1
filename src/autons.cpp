@@ -50,10 +50,29 @@ void rollerSide(){
 }
 
 void mid(){
+    flywheelMove(480);
+    move(-1500);
+    absturn(90);
+    intake.move(-70);
+    timedMove(-80,300);
+    //pros::delay(50);
+    move(330);
+    absturn(106);
+    shootDisks(2);
+    flywheelMove(0);
+
+}
+
+void rollerOnly(){
     intake.move(-70);
     timedMove(-80,300);
     //pros::delay(50);
     move(330);
 }
 
-void noAuton(){}
+void noAuton(){
+    intake.move(-70);
+    timedMove(-80,300);
+    //pros::delay(50);
+    move(330);
+}
