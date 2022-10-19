@@ -6,7 +6,7 @@
 #include "autons.h"
 #include <cmath>
 #define OPTICAL_PORT 1
-#define FLYWHEEL_SPEED_TARGET 406 //425
+#define FLYWHEEL_SPEED_TARGET 410 //425
 #define UP_MOST 23.0476
 #define DOWN_MOST 111.451
 
@@ -165,7 +165,7 @@ void tripleShot(void* param){
 	rollerToggle = true;
 	intake.move(127);
 	testFlywheelSpeed = 580;
-	indexer.move_relative(ONE_DISK_ROTATION*2, 120);
+	indexer.move_relative(ONE_DISK_ROTATION*3, 120);
 	pros::delay(550);
 	testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
 	//indexToggle = false;
