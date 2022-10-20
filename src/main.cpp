@@ -6,7 +6,7 @@
 #include "autons.h"
 #include <cmath>
 #define OPTICAL_PORT 1
-#define FLYWHEEL_SPEED_TARGET 410 //425
+#define FLYWHEEL_SPEED_TARGET 400 //425
 #define UP_MOST 23.0476
 #define DOWN_MOST 111.451
 
@@ -76,7 +76,8 @@ void competition_initialize() {
 		if(curr_ang > 5 && curr_ang < 75) selectedAuto = 1;
 		else if (curr_ang >  80 && curr_ang < 150) selectedAuto = 2;
 		else if(curr_ang > 155 && curr_ang < 225) selectedAuto = 3;
-		else if(curr_ang > 235) selectedAuto = 0;//while(Andres == "")
+		else if(curr_ang > 235 && curr_ang  < 300) selectedAuto = 4;//while(Andres == "")
+		else if(curr_ang > 300) selectedAuto = 0;
 
 		//std::cout << "curr_ang: " << curr_ang << std::endl;
 		//std::cout << "selected: " << selectedAuto << std::endl;
@@ -94,6 +95,9 @@ void competition_initialize() {
 					break;
 				case 3:
 					controller.print(1, 0, "Mid");
+					break;
+				case 4:
+					controller.print(1,0, "Skills");
 					break;
 				default:
 					controller.print(1, 0, "SEL");
@@ -164,30 +168,27 @@ bool rollerToggle = false;
 void tripleShot(void* param){
 	rollerToggle = true;
 	intake.move(127);
-	testFlywheelSpeed = 580;
+	testFlywheelSpeed = 600;
 	indexer.move_relative(ONE_DISK_ROTATION*3, 120);
 	pros::delay(550);
 	testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
-	//indexToggle = false;
+	indexToggle = false;
 	intake.move(0);
 	rollerToggle = false;
 }
 
 void singleShot(void* param){
-	/*while(true){
-		bool AndresCode = false;
-	}*/
 	if(lineFollower.get_value() < 400 && lineFollower.get_value() > 0){
 		skipStop = true;
 	}
 	indexer.move_relative(ONE_DISK_ROTATION, 170);
-	//pros::delay(250);
-	/*if(skipStop == false){
+	pros::delay(250);
+	if(skipStop == false){
 		indexToggle = false;//for 
 	}
 	else{
 		skipStop = false;
-	}*/
+	}
 }
 
 void opcontrol() {
@@ -265,14 +266,21 @@ void opcontrol() {
 		if(controller.get_digital_new_press(DIGITAL_Y)){
 			testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
 		}
+		else if(controller.get_digital_new_press(DIGITAL_X)){
+			testFlywheelSpeed = testFlywheelSpeed +3;
+		}
+		else if(controller.get_digital_new_press(DIGITAL_A)){
+			testFlywheelSpeed = testFlywheelSpeed -3;
+		}
 		if (controller.get_digital_new_press(DIGITAL_DOWN)){ //Spin up
 			flywheelAllowed = !flywheelAllowed;
+			controller.print(1,0,"%f ", (testFlywheelSpeed));
 		}
 		
 		if(flywheelAllowed == false || indexToggle == false) flywheelBrake();
 		else if(indexToggle) flywheelMove(testFlywheelSpeed);
 
-		/*if(lineFollower.get_value() < 600 && lineFollower.get_value() > 0){
+		if(lineFollower.get_value() < 600 && lineFollower.get_value() > 0){
 			detectedTime++;
 		}
 		else{
@@ -281,8 +289,7 @@ void opcontrol() {
 
 		if(detectedTime > 40){
 			indexToggle = true;
-		}*/
-		indexToggle = true;
+		}
 
 		// if(controller.get_digital_new_press(DIGITAL_R2)){
 		// 	indexer.move_relative(ONE_DISK_ROTATION,400);
@@ -359,7 +366,7 @@ void opcontrol() {
 		rPwr = (abs(rYaxis) > 2) ? (sgn(rYaxis) * (1.2*pow(1.03566426, sgn(rYaxis)*rYaxis) - 1.2 + sgn(rYaxis)*0.2*rYaxis)) : 0;
 		lPwr = (abs(lYaxis) > 2) ? (sgn(lYaxis) * (1.2*pow(1.03566426, sgn(lYaxis)*lYaxis) - 1.2 + sgn(lYaxis)*0.2*lYaxis)) : 0;
 		
-		chas_move(lPwr, rPwr);
+		chas_move(-rPwr, -lPwr);
 		
 		pros::delay(10);
 		count++;

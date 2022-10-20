@@ -76,3 +76,7 @@ void noAuton(){
     //pros::delay(50);
     move(330);
 }
+
+void skills(){
+    
+}
