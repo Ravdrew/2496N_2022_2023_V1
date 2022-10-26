@@ -6,7 +6,7 @@
 #include "autons.h"
 #include <cmath>
 #define OPTICAL_PORT 1
-#define FLYWHEEL_SPEED_TARGET 400 //425
+#define FLYWHEEL_SPEED_TARGET 395 //425
 #define UP_MOST 23.0476
 #define DOWN_MOST 111.451
 
@@ -366,7 +366,7 @@ void opcontrol() {
 		rPwr = (abs(rYaxis) > 2) ? (sgn(rYaxis) * (1.2*pow(1.03566426, sgn(rYaxis)*rYaxis) - 1.2 + sgn(rYaxis)*0.2*rYaxis)) : 0;
 		lPwr = (abs(lYaxis) > 2) ? (sgn(lYaxis) * (1.2*pow(1.03566426, sgn(lYaxis)*lYaxis) - 1.2 + sgn(lYaxis)*0.2*lYaxis)) : 0;
 		
-		chas_move(-rPwr, -lPwr);
+		chas_move(lPwr, rPwr);
 		
 		pros::delay(10);
 		count++;
