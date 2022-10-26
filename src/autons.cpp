@@ -5,9 +5,12 @@
 #include "autons.h"
 
 void AWP(){
-    flywheelMove(0);
+    flywheelMove(500);
     intake.move(-70);
     timedMove(-80,300);
+    pros::delay(1000);
+    shootDisks(2);
+    pros::delay(100);
     //pros::delay(50);
     move(330);
     intake.move(0);
@@ -75,4 +78,8 @@ void noAuton(){
     timedMove(-80,300);
     //pros::delay(50);
     move(330);
+}
+
+void skills(){
+    
 }
