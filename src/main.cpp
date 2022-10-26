@@ -165,8 +165,8 @@ void tripleShot(void* param){
 	rollerToggle = true;
 	intake.move(127);
 	testFlywheelSpeed = 580;
-	indexer.move_relative(ONE_DISK_ROTATION*2, 120);
-	pros::delay(550);
+	indexer.move_relative(ONE_DISK_ROTATION*3, 120);
+	pros::delay(670);
 	testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
 	//indexToggle = false;
 	intake.move(0);
