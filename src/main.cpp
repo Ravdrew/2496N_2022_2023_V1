@@ -215,6 +215,7 @@ void opcontrol() {
 
 	
 	while (true) {
+		
 		/*if(controller.get_digital_new_press(DIGITAL_A)){
 			mid();
 		}*.
@@ -262,8 +263,7 @@ void opcontrol() {
 		/*else if(controller.get_digital_new_press(DIGITAL_LEFT)){
 			testFlywheelSpeed = -600;
 		}*/
-
-		/*if(controller.get_digital_new_press(DIGITAL_Y)){
+		if(controller.get_digital_new_press(DIGITAL_Y)){
 			testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
 		}
 		else if(controller.get_digital_new_press(DIGITAL_X)){
@@ -272,15 +272,13 @@ void opcontrol() {
 		else if(controller.get_digital_new_press(DIGITAL_A)){
 			testFlywheelSpeed = testFlywheelSpeed -3;
 		}
-		
 		if (controller.get_digital_new_press(DIGITAL_DOWN)){ //Spin up
 			flywheelAllowed = !flywheelAllowed;
 			controller.print(1,0,"%f ", (testFlywheelSpeed));
-		}*/
+		}
 		
-		//REME BER
-		///if(flywheelAllowed == false || indexToggle == false) flywheelBrake();
-		//else if(indexToggle) flywheelMove(testFlywheelSpeed);
+		if(flywheelAllowed == false || indexToggle == false) flywheelBrake();
+		else if(indexToggle) flywheelMove(testFlywheelSpeed);
 
 		if(lineFollower.get_value() < 600 && lineFollower.get_value() > 0){
 			detectedTime++;
@@ -360,7 +358,6 @@ void opcontrol() {
 
 		//Driver Curves
 
-	
 		float lPwr, rPwr;
 		float rYaxis, lYaxis;
 		rYaxis = controller.get_analog(ANALOG_RIGHT_Y);
@@ -370,11 +367,8 @@ void opcontrol() {
 		lPwr = (abs(lYaxis) > 2) ? (sgn(lYaxis) * (1.2*pow(1.03566426, sgn(lYaxis)*lYaxis) - 1.2 + sgn(lYaxis)*0.2*lYaxis)) : 0;
 		
 		chas_move(lPwr, rPwr);
-
-		flywheelPDF();
-
+		
 		pros::delay(10);
-
 		count++;
 	}
 
