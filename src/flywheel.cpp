@@ -1,8 +1,6 @@
 #include "main.h"
 #include "robot.h"
 #include "flywheel.h"
-#include <fstream>
-#include <vector>
  
 #define TBH_GAIN 0
 #define F_KP 0
@@ -11,7 +9,6 @@
 #define F_KF 0
 #define ENCODER_TO_ROTATION 0
 #define MINUTE_IN_MILLISECOND 60000.0
-#define EMA_ALPHA 0.9
 
 void flywheelMove(double speed){
     outFlywheel.move(speed);
@@ -27,44 +24,27 @@ int sgn(double input){
 	return input/abs(input);
 }
 
-double EMA(double alpha, double latest, double stored){
-    return alpha*latest + (1-alpha)*stored;
-}
-
-
-double f_time = 0;
+int f_time = 0;
 double f_error = 0;
 double f_prev_error = 0;
 double f_derivative = 0;
 double f_power = 0;
 double f_output = 0;
 double f_target = 600;
-double f_curr_speed;
-
-double ema_result;
-double prev_ema_result = 0;
-
-double dema_result;
-
-double f_input;
-
-bool fileCreated = false;
-
-std::ofstream outFile("flyvals.txt");
-
+double f_prev_dist = 0;
+double f_curr_dist = 0;
 //you are hot
 
-void flywheelPDF(){    
+void flywheelPDF(){
+    midFlywheel.set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
+    outFlywheel.set_encoder_units(pros::E_MOTOR_ENCODER_ROTATIONS);
 
-    f_curr_speed = (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity()) / 2;
-
-    ema_result = EMA(EMA_ALPHA, f_curr_speed, ema_result);
-    dema_result = 2*ema_result - EMA(EMA_ALPHA, ema_result, dema_result);
-    
-    f_input = dema_result;
+    double f_curr_speed = (f_curr_dist - f_prev_dist) / 10.0 * MINUTE_IN_MILLISECOND;
+    //std::cout << (f_curr_dist - f_prev_dist) / 10.0 << std::endl;
+    std::cout << "my speed: " << f_curr_speed << "      pros speed:" << (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity()) / 2 << std::endl;
 
     f_prev_error = f_error;
-    f_error = f_target - f_input;
+    f_error = f_target - f_curr_speed;
 
     f_derivative = f_error - f_prev_error; 
 
@@ -72,9 +52,8 @@ void flywheelPDF(){
 
     flywheelMove(127);
 
-    outFile << f_time << " " << f_curr_speed << " " << ema_result << " " << dema_result << " " << f_output << std::endl;
-
     f_time += 10;
+    f_prev_dist = (midFlywheel.get_position() + outFlywheel.get_position()) / 2.0;
 }
 
 /*float tbh_target = 600;
