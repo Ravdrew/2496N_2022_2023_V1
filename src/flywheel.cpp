@@ -53,6 +53,9 @@ bool fileCreated = false;
 std::ofstream outFile("flyvals.txt");
 
 //you are hot
+void changeFlywheelTarget(double speed){
+    f_target = speed;
+}
 
 void flywheelPDF(){    
 
