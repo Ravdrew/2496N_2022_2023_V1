@@ -4,6 +4,7 @@
 #include "PID.h"
 #include "flywheel.h"
 #include "autons.h"
+#include <fstream>
 #include <cmath>
 #define OPTICAL_PORT 1
 #define FLYWHEEL_SPEED_TARGET 395 //425
@@ -192,6 +193,7 @@ void singleShot(void* param){
 }
 
 void opcontrol() {
+	
 	controller.clear();
 	leftFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	leftBack.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
