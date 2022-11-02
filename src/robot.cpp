@@ -15,13 +15,14 @@ pros::Motor outFlywheel(1, MOTOR_GEARSET_6, false, MOTOR_ENCODER_DEGREES);
 pros::c::optical_rgb_s_t rgb_value;*/
 // pros::Limit limit_sensor(10);
 
-pros::ADIAnalogIn lineFollower (8);
+pros::ADIAnalogIn lineFollower (6);
 
 /*pros::ADIEncoder leftE(1, 2);
 pros::ADIEncoder rightE(3, 4);*/
 //pros::ADIEncoder midE(7, 8);
 
 Piston endBack(7);
+Piston intakePiston(8);
 
 pros::ADIPotentiometer pot (3, pros::E_ADI_POT_V2);
 

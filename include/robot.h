@@ -18,6 +18,7 @@ extern pros::Motor midFlywheel;
 extern pros::Motor outFlywheel;
 
 extern Piston endBack;
+extern Piston intakePiston;
 
 extern pros::Imu imu;
 

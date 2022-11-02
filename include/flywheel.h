@@ -3,6 +3,7 @@
 #ifndef FLY_H_
 #define FLY_H_
 
+#define FLYWHEEL_SPEED_TARGET 385
 int sgn(double input);
 //void changeTBHTarget(float speed);
 //void takeBackHalf();

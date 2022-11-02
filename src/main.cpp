@@ -7,7 +7,6 @@
 #include <fstream>
 #include <cmath>
 #define OPTICAL_PORT 1
-#define FLYWHEEL_SPEED_TARGET 395 //425
 #define UP_MOST 23.0476
 #define DOWN_MOST 111.451
 
@@ -169,10 +168,10 @@ bool rollerToggle = false;
 void tripleShot(void* param){
 	rollerToggle = true;
 	intake.move(127);
-	testFlywheelSpeed = 580;
-	indexer.move_relative(ONE_DISK_ROTATION*2, 120);
-	pros::delay(550);
-	testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
+	changeFlywheelTarget(600);
+	indexer.move_relative(ONE_DISK_ROTATION*3, 120);
+	pros::delay(700);
+	changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
 	indexToggle = false;
 	intake.move(0);
 	rollerToggle = false;
@@ -182,8 +181,10 @@ void singleShot(void* param){
 	if(lineFollower.get_value() < 400 && lineFollower.get_value() > 0){
 		skipStop = true;
 	}
+	changeFlywheelTarget(600);
 	indexer.move_relative(ONE_DISK_ROTATION, 170);
 	pros::delay(250);
+	changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
 	if(skipStop == false){
 		indexToggle = false;//for 
 	}
@@ -191,6 +192,7 @@ void singleShot(void* param){
 		skipStop = false;
 	}
 }
+
 
 void opcontrol() {
 	
@@ -214,6 +216,9 @@ void opcontrol() {
 	bool flywheelAllowed = true;
 
 	bool manualIndex = false;
+
+
+	//changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
 
 	
 	while (true) {
@@ -273,16 +278,19 @@ void opcontrol() {
 		}
 		else if(controller.get_digital_new_press(DIGITAL_A)){
 			testFlywheelSpeed = testFlywheelSpeed -3;
-		}
+		}*/
 		
 		if (controller.get_digital_new_press(DIGITAL_DOWN)){ //Spin up
 			flywheelAllowed = !flywheelAllowed;
-			controller.print(1,0,"%f ", (testFlywheelSpeed));
-		}*/
+		}
 		
 		//REME BER
-		///if(flywheelAllowed == false || indexToggle == false) flywheelBrake();
-		//else if(indexToggle) flywheelMove(testFlywheelSpeed);
+		if(flywheelAllowed == false || indexToggle == false) flywheelBrake();
+		else if(indexToggle) flywheelPDF();
+
+		if(controller.get_digital_new_press(DIGITAL_X)){
+			intakePiston.flip();
+		}
 
 		if(lineFollower.get_value() < 600 && lineFollower.get_value() > 0){
 			detectedTime++;
@@ -372,8 +380,6 @@ void opcontrol() {
 		lPwr = (abs(lYaxis) > 2) ? (sgn(lYaxis) * (1.2*pow(1.03566426, sgn(lYaxis)*lYaxis) - 1.2 + sgn(lYaxis)*0.2*lYaxis)) : 0;
 		
 		chas_move(lPwr, rPwr);
-
-		flywheelPDF();
 
 		pros::delay(10);
 

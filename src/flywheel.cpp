@@ -1,17 +1,17 @@
 #include "main.h"
 #include "robot.h"
 #include "flywheel.h"
-#include <fstream>
+#include <stdio.h>
 #include <vector>
  
 #define TBH_GAIN 0
-#define F_KP 0
-#define F_KI 0
+#define F_KP 0.9
+#define F_KI 0.0
 #define F_KD 0
-#define F_KF 0
+#define F_KF 0.209
 #define ENCODER_TO_ROTATION 0
 #define MINUTE_IN_MILLISECOND 60000.0
-#define EMA_ALPHA 0.9
+#define EMA_ALPHA 0.3
 
 void flywheelMove(double speed){
     outFlywheel.move(speed);
@@ -38,7 +38,7 @@ double f_prev_error = 0;
 double f_derivative = 0;
 double f_power = 0;
 double f_output = 0;
-double f_target = 600;
+double f_target = FLYWHEEL_SPEED_TARGET;
 double f_curr_speed;
 
 double ema_result;
@@ -50,21 +50,18 @@ double f_input;
 
 bool fileCreated = false;
 
-std::ofstream outFile("flyvals.txt");
-
 //you are hot
 void changeFlywheelTarget(double speed){
     f_target = speed;
 }
 
-void flywheelPDF(){    
-
+void flywheelPDF(){      
     f_curr_speed = (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity()) / 2;
 
     ema_result = EMA(EMA_ALPHA, f_curr_speed, ema_result);
-    dema_result = 2*ema_result - EMA(EMA_ALPHA, ema_result, dema_result);
+    //dema_result = 2*ema_result - EMA(EMA_ALPHA, ema_result, dema_result);
     
-    f_input = dema_result;
+    f_input = ema_result;
 
     f_prev_error = f_error;
     f_error = f_target - f_input;
@@ -73,9 +70,12 @@ void flywheelPDF(){
 
     f_output = F_KP * f_error + F_KD * f_derivative + F_KF * f_target;
 
-    flywheelMove(127);
+    flywheelMove(f_output);
 
-    outFile << f_time << " " << f_curr_speed << " " << ema_result << " " << dema_result << " " << f_output << std::endl;
+    float f_draw = midFlywheel.get_voltage() + outFlywheel.get_voltage();
+
+
+    std::cout << f_time << " " << f_curr_speed << " " << ema_result << " " << dema_result << " " << f_output << " " << f_draw << "\n";
 
     f_time += 10;
 }
