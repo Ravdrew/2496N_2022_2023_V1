@@ -3,6 +3,7 @@
 #include "movement.h"
 #include "flywheel.h"
 #include "autons.h"
+#include <cmath> //keijay added this, it makes our code look cooler...
 
 void AWP(){
     flywheelMove(445);
@@ -28,6 +29,19 @@ void AWP(){
     absturn(-132, false);
     intake.move(-127);
     move(-2400);
+
+}
+
+void taivexautoncount(){
+    flywheelMove(475); //moves flywheel at 475 rpm to rev it up
+    intake.move(-70); // intakes move 
+    timedMove(-80, 300); 
+    move(330);
+    intake.move(0);
+    pros::delay(700);
+    shoot_Disks();
+    
+
 
 }
 
