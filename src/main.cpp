@@ -94,7 +94,7 @@ void competition_initialize() {
 					controller.print(1, 0, "Rol");
 					break;
 				case 3:
-					controller.print(1, 0, "Mid");
+					controller.print(1, 0, "offSideRoller");
 					break;
 				case 4:
 					controller.print(1,0, "Skills");
@@ -133,7 +133,7 @@ void autonomous() {
 			rollerSide();
 			break;
 		case 3:
-			mid();
+			offSideRoller();
 			break;
 		default:
 			noAuton();

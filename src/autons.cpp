@@ -6,20 +6,21 @@
 #include <cmath> //keijay added this, it makes our code look cooler...
 
 void AWP(){
-    flywheelMove(445);
+    flywheelMove(432);
     intake.move(-80);
     timedMove(-70,300);
     pros::delay(1250);
     shootDisks(2);
     pros::delay(100);
-    //pros::delay(50);
     move(330);
+    intakePiston.flip();
     intake.move(0);
     flywheelMove(0);
+    intakePiston.flip();
     absturn(-119, false);
-    intake.move(-100);
-    move(-1600, false, 0, 120, 1800);
-    intake.move(110);
+    move(-1300, false, 0, 120, 1800);
+    intake.move(100);
+    pros::delay(500);
     flywheelMove(455);
     move(-1190, false, 0, 60, 1400);
     absturn(-25, false);
@@ -39,7 +40,6 @@ void taivexautoncount(){
     move(330);
     intake.move(0);
     pros::delay(700);
-    shoot_Disks();
     
 
 
