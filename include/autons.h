@@ -9,7 +9,7 @@ void AWP();
 
 void rollerSide();
 
-void mid();
+void offSideRoller();
 
 void noAuton();
 
