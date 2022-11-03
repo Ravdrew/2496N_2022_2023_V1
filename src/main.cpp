@@ -270,15 +270,13 @@ void opcontrol() {
 			testFlywheelSpeed = -600;
 		}*/
 
-		/*if(controller.get_digital_new_press(DIGITAL_Y)){
-			testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
+		if(controller.get_digital_new_press(DIGITAL_Y)){
+			changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
 		}
-		else if(controller.get_digital_new_press(DIGITAL_X)){
-			testFlywheelSpeed = testFlywheelSpeed +3;
+		else if(controller.get_digital_new_press(DIGITAL_B)){
+			changeFlywheelTarget(SINGLE_SPEED_TARGET);
 		}
-		else if(controller.get_digital_new_press(DIGITAL_A)){
-			testFlywheelSpeed = testFlywheelSpeed -3;
-		}*/
+	
 		
 		if (controller.get_digital_new_press(DIGITAL_DOWN)){ //Spin up
 			flywheelAllowed = !flywheelAllowed;
