@@ -4,9 +4,9 @@
 #include "PID.h"
 #include "flywheel.h"
 #include "autons.h"
+#include <fstream>
 #include <cmath>
 #define OPTICAL_PORT 1
-#define FLYWHEEL_SPEED_TARGET 395 //425
 #define UP_MOST 23.0476
 #define DOWN_MOST 111.451
 
@@ -94,7 +94,7 @@ void competition_initialize() {
 					controller.print(1, 0, "Rol");
 					break;
 				case 3:
-					controller.print(1, 0, "offSideRoller");
+					controller.print(1, 0, "Mid");
 					break;
 				case 4:
 					controller.print(1,0, "Skills");
@@ -133,7 +133,7 @@ void autonomous() {
 			rollerSide();
 			break;
 		case 3:
-			offSideRoller();
+			mid();
 			break;
 		default:
 			noAuton();
@@ -168,10 +168,10 @@ bool rollerToggle = false;
 void tripleShot(void* param){
 	rollerToggle = true;
 	intake.move(127);
-	testFlywheelSpeed = 580;
+	changeFlywheelTarget(600);
 	indexer.move_relative(ONE_DISK_ROTATION*3, 120);
-	pros::delay(625);
-	testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
+	pros::delay(700);
+	changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
 	indexToggle = false;
 	intake.move(0);
 	rollerToggle = false;
@@ -181,8 +181,10 @@ void singleShot(void* param){
 	if(lineFollower.get_value() < 400 && lineFollower.get_value() > 0){
 		skipStop = true;
 	}
+	changeFlywheelTarget(600);
 	indexer.move_relative(ONE_DISK_ROTATION, 170);
 	pros::delay(250);
+	changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
 	if(skipStop == false){
 		indexToggle = false;//for 
 	}
@@ -191,7 +193,9 @@ void singleShot(void* param){
 	}
 }
 
+
 void opcontrol() {
+	
 	controller.clear();
 	leftFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	leftBack.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
@@ -213,9 +217,11 @@ void opcontrol() {
 
 	bool manualIndex = false;
 
+
+	//changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
+
 	
 	while (true) {
-		
 		/*if(controller.get_digital_new_press(DIGITAL_A)){
 			mid();
 		}*.
@@ -263,22 +269,26 @@ void opcontrol() {
 		/*else if(controller.get_digital_new_press(DIGITAL_LEFT)){
 			testFlywheelSpeed = -600;
 		}*/
+
 		if(controller.get_digital_new_press(DIGITAL_Y)){
-			testFlywheelSpeed = FLYWHEEL_SPEED_TARGET;
+			changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
 		}
-		else if(controller.get_digital_new_press(DIGITAL_X)){
-			testFlywheelSpeed = testFlywheelSpeed +3;
+		else if(controller.get_digital_new_press(DIGITAL_B)){
+			changeFlywheelTarget(SINGLE_SPEED_TARGET);
 		}
-		else if(controller.get_digital_new_press(DIGITAL_A)){
-			testFlywheelSpeed = testFlywheelSpeed -3;
-		}
+	
+		
 		if (controller.get_digital_new_press(DIGITAL_DOWN)){ //Spin up
 			flywheelAllowed = !flywheelAllowed;
-			controller.print(1,0,"%f ", (testFlywheelSpeed));
 		}
 		
+		//REME BER
 		if(flywheelAllowed == false || indexToggle == false) flywheelBrake();
-		else if(indexToggle) flywheelMove(testFlywheelSpeed);
+		else if(indexToggle) flywheelPDF();
+
+		if(controller.get_digital_new_press(DIGITAL_X)){
+			intakePiston.flip();
+		}
 
 		if(lineFollower.get_value() < 600 && lineFollower.get_value() > 0){
 			detectedTime++;
@@ -358,6 +368,7 @@ void opcontrol() {
 
 		//Driver Curves
 
+	
 		float lPwr, rPwr;
 		float rYaxis, lYaxis;
 		rYaxis = controller.get_analog(ANALOG_RIGHT_Y);
@@ -367,8 +378,9 @@ void opcontrol() {
 		lPwr = (abs(lYaxis) > 2) ? (sgn(lYaxis) * (1.2*pow(1.03566426, sgn(lYaxis)*lYaxis) - 1.2 + sgn(lYaxis)*0.2*lYaxis)) : 0;
 		
 		chas_move(lPwr, rPwr);
-		
+
 		pros::delay(10);
+
 		count++;
 	}
 
