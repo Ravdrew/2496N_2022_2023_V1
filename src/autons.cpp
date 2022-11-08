@@ -12,8 +12,8 @@ void AWP(){
     pros::delay(1250);
     shootDisks(2);
     pros::delay(100);
-    //pros::delay(50);
     move(330);
+    intakePiston.flip();
     intake.move(0);
     ////flywheelMove(0);
     absturn(-119, false);
