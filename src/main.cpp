@@ -283,14 +283,14 @@ void opcontrol() {
 		}
 		
 		//REME BER
-		if(flywheelAllowed == false || indexToggle == false) flywheelBrake();
+		if(flywheelAllowed == false) flywheelBrake(); //if(flywheelAllowed == false || indexToggle == false)
 		else if(indexToggle) flywheelPDF();
 
-		if(controller.get_digital_new_press(DIGITAL_X)){
+		/*if(controller.get_digital_new_press(DIGITAL_X)){
 			intakePiston.flip();
-		}
+		}*/
 
-		if(lineFollower.get_value() < 600 && lineFollower.get_value() > 0){
+		/*if(lineFollower.get_value() < 600 && lineFollower.get_value() > 0){
 			detectedTime++;
 		}
 		else{
@@ -299,7 +299,8 @@ void opcontrol() {
 
 		if(detectedTime > 40){
 			indexToggle = true;
-		}
+		}*/
+		indexToggle = true;
 
 		// if(controller.get_digital_new_press(DIGITAL_R2)){
 		// 	indexer.move_relative(ONE_DISK_ROTATION,400);

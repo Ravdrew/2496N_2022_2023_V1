@@ -8,7 +8,7 @@
 #define F_KP 0.9
 #define F_KI 0.0
 #define F_KD 0
-#define F_KF 0.209
+#define F_KF 0.213
 #define ENCODER_TO_ROTATION 0
 #define MINUTE_IN_MILLISECOND 60000.0
 #define EMA_ALPHA 0.3

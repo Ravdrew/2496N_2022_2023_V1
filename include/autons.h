@@ -7,6 +7,8 @@
 
 void AWP();
 
+void mid();
+
 void rollerSide();
 
 void offSideRoller();
