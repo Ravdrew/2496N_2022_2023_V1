@@ -66,6 +66,7 @@ int timer = 0;
 int selectedAuto = 1;
 int prevSelectedAuto = 1;
 
+
 double curr_ang;
 
 void competition_initialize() {
@@ -169,7 +170,7 @@ void tripleShot(void* param){
 	rollerToggle = true;
 	intake.move(127);
 	changeFlywheelTarget(600);
-	indexer.move_relative(ONE_DISK_ROTATION*3, 120);
+	indexer.move_relative(ONE_DISK_ROTATION*3, 121);
 	pros::delay(700);
 	changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
 	indexToggle = false;
@@ -222,47 +223,47 @@ void opcontrol() {
 
 	
 	while (true) {
-		/*if(controller.get_digital_new_press(DIGITAL_A)){
-			mid();
-		}*.
+		// if(controller.get_digital_new_press(DIGITAL_A)){
+		// 	mid();
+		// }
 		//Selecting team for optical sensor
 		
 
-		if(!(count % 5)){
-			if(selectedTeam == -1){
-				controller.print(0,1,"Blue %f", testFlywheelSpeed);
-				//controller.print(0,0,"%f ", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2);
-			}
+		// if(!(count % 5)){
+		// 	if(selectedTeam == -1){
+		// 		controller.print(0,1,"Blue %f");
+		// 		//controller.print(0,0,"%f ", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2);
+		// 	}
 
-			else if(selectedTeam == 1){
-				controller.print(0,1,"Red %f", testFlywheelSpeed);
-				//controller.print(0,0,"%f ", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2);
-			}
-		}
+		// 	else if(selectedTeam == 1){
+		// 		controller.print(0,1,"Red %f");
+		// 		//controller.print(0,0,"%f ", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2);
+		// 	}
+		// }
 
-		//Optical Sensor Code
+		// //Optical Sensor Code
 		
 
-		/*if (controller.get_digital_new_press(DIGITAL_L2)){
-			rollerToggle = !rollerToggle;
-		}
-		if(rollerToggle == true){
-			optical_sensor.set_led_pwm(100);
-			if(selectedTeam == -1){
-				intake.move(-127);
-				if(optical_sensor.get_hue() >= 100){
-					intake.brake();
-					rollerToggle = !rollerToggle;
-				}
-			}
-			else if(selectedTeam == 1){
-				intake.move(-127);
-				if(optical_sensor.get_hue() < 50){
-					intake.brake();
-					rollerToggle = !rollerToggle;
-				}
-			}
-		}*/
+		// if (controller.get_digital_new_press(DIGITAL_L2)){
+		// 	rollerToggle = !rollerToggle;
+		// }
+		// if(rollerToggle == true){
+		// 	optical_sensor.set_led_pwm(100);
+		// 	if(selectedTeam == -1){
+		// 		intake.move(-127);
+		// 		if(optical_sensor.get_hue() >= 100){
+		// 			intake.brake();
+		// 			rollerToggle = !rollerToggle;
+		// 		}
+		// 	}
+		// 	else if(selectedTeam == 1){
+		// 		intake.move(-127);
+		// 		if(optical_sensor.get_hue() < 50){
+		// 			intake.brake();
+		// 			rollerToggle = !rollerToggle;
+		// 		}
+		// 	}
+		// }
 	
 		
 		
