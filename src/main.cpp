@@ -219,7 +219,7 @@ void opcontrol() {
 	bool manualIndex = false;
 
 
-	//changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
+	changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
 
 	
 	while (true) {

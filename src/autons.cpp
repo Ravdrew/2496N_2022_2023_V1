@@ -70,8 +70,9 @@ void rollerSide(){
 }
  
 void offSideRoller(){
-    flywheelMove(470);
-    move(-1400);
+    changeFlywheelTarget(445);
+    pros::Task autoFlyControl(autonFlywheelPDF);
+    move(-1600);
     absturn(90);
     intake.move(-70);
     timedMove(-80,300);

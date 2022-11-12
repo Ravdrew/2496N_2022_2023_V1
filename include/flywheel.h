@@ -13,6 +13,7 @@ void flywheelMove(double speed);
 void flywheelBrake();
 void changeFlywheelTarget(double speed);
 void flywheelPDF();
+void autonFlywheelPDF();
 double getFlywheelTarget();
 
 #endif

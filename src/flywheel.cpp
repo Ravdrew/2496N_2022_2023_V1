@@ -59,6 +59,35 @@ double getFlywheelTarget(){
     return f_target;
 }
 
+void autonFlywheelPDF(){
+    while(true){
+        f_curr_speed = (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity()) / 2;
+
+        ema_result = EMA(EMA_ALPHA, f_curr_speed, ema_result);
+        //dema_result = 2*ema_result - EMA(EMA_ALPHA, ema_result, dema_result);
+        
+        f_input = ema_result;
+
+        f_prev_error = f_error;
+        f_error = f_target - f_input;
+
+        f_derivative = f_error - f_prev_error; 
+
+        f_output = F_KP * f_error + F_KD * f_derivative + F_KF * f_target;
+
+        if(f_target < 0) f_output = 0;
+
+        flywheelMove(f_output);
+
+        float f_draw = midFlywheel.get_voltage() + outFlywheel.get_voltage();
+
+
+        std::cout << f_time << " " << f_curr_speed << " " << ema_result << " " << dema_result << " " << f_output << " " << f_draw << "\n";
+
+        f_time += 10;
+    }
+}
+
 void flywheelPDF(){      
     f_curr_speed = (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity()) / 2;
 

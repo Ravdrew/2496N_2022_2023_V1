@@ -137,7 +137,7 @@ void move(float target, bool ask_slew, float slew_rate, float power_cap, float a
         }
 
         chas_move(voltage - heading, voltage + heading); // (voltage - heading, voltage + heading)
-        std::cout << "error: " << abs(target - encoder_average) << std::endl;
+        //std::cout << "error: " << abs(target - encoder_average) << std::endl;
         if (abs(target - encoder_average) <= 4) count++;
         if (count >= 23) break;
 
@@ -165,7 +165,7 @@ void turn(float target, bool ask_slew, float slew_rate){
 
         chas_move(voltage, -voltage);
         
-        std::cout << "error: " << abs(target - position) << std::endl;
+        //std::cout << "error: " << abs(target - position) << std::endl;
         if (abs(target - position) <= 2) count++;
         if (count >= COUNT_CONST) break;
 
@@ -231,7 +231,7 @@ void absturnTimed(float abstarget, int timer_amt, bool ask_slew, float slew_rate
        voltage = absRotateTimed.calc(abstarget, position, TURN_INTEGRAL_KICK_IN, TURN_MAX_INTEGRAL, slew_rate, ask_slew);
        std::abs(voltage) > power_cap ? voltage = power_cap*voltage/std::abs(voltage) : voltage = voltage;
        chas_move(voltage, -voltage);
-       printf("error: %f\r\n", (imu.get_rotation()));
+       //printf("error: %f\r\n", (imu.get_rotation()));
        if(abs(abstarget - position) <= 230) timer++;
        if(abs(abstarget - position) <= 1.5) count++;
        if(count >= 30 || timer >= timer_amt) break;
