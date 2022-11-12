@@ -3,7 +3,7 @@
 #ifndef FLY_H_
 #define FLY_H_
 
-#define FLYWHEEL_SPEED_TARGET 380
+#define FLYWHEEL_SPEED_TARGET 385
 #define SINGLE_SPEED_TARGET 373
 
 int sgn(double input);

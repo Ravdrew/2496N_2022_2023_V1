@@ -61,6 +61,7 @@ double getFlywheelTarget(){
 
 void autonFlywheelPDF(){
     while(true){
+        std::cout << f_target << std::endl;
         f_curr_speed = (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity()) / 2;
 
         ema_result = EMA(EMA_ALPHA, f_curr_speed, ema_result);
@@ -85,6 +86,8 @@ void autonFlywheelPDF(){
         std::cout << f_time << " " << f_curr_speed << " " << ema_result << " " << dema_result << " " << f_output << " " << f_draw << "\n";
 
         f_time += 10;
+
+        pros::delay(10);
     }
 }
 

@@ -6,22 +6,27 @@
 #include <cmath> //keijay added this, it makes our code look cooler...
  
 void AWP(){
-    changeFlywheelTarget(432);
-    pros::Task autoFlyControl(flywheelPDF);
+    changeFlywheelTarget(545);
+    pros::Task autoFlyControl(autonFlywheelPDF);
     intake.move(-60);
-    timedMove(-50,100);
-    pros::delay(1250);
+    timedMove(-50,150);
+    pros::delay(1200);
     shootDisks(2);
-    pros::delay(100);
+    //pros::delay(100);
     move(330);
-    flywheelMove(0);
-    intake.move(100);
-    pros::delay(500);
+    changeFlywheelTarget(-5);
+    intake.move(127);
+    //pros::delay(200);
     absturn(-123, false);
-    move(-1350, false, 0, 120, 1800);
+    move(-1700, false, 0, 90, 2000);
     intake.move(75);
-    pros::delay(500);
-    move(-150, false, 0, 20, 500);
+    //pros::delay(100);
+    move(-1300, false, 0, 50, 1800);
+    changeFlywheelTarget(472);
+    absturn(-28, false);
+
+    //pros::delay(1000);
+    shootDisks(3);
     // pros::delay(500);
     // flywheelMove(455);
     // move(-1190, false, 0, 60, 1400);
@@ -70,7 +75,7 @@ void rollerSide(){
 }
  
 void offSideRoller(){
-    changeFlywheelTarget(445);
+    changeFlywheelTarget(508);
     pros::Task autoFlyControl(autonFlywheelPDF);
     move(-1600);
     absturn(90);
