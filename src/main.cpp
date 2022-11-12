@@ -182,10 +182,10 @@ void singleShot(void* param){
 	if(lineFollower.get_value() < 400 && lineFollower.get_value() > 0){
 		skipStop = true;
 	}
-	changeFlywheelTarget(600);
+	//changeFlywheelTarget(600);
 	indexer.move_relative(ONE_DISK_ROTATION, 170);
 	pros::delay(250);
-	changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
+	//changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
 	if(skipStop == false){
 		indexToggle = false;//for 
 	}
@@ -229,11 +229,10 @@ void opcontrol() {
 		//Selecting team for optical sensor
 		
 
-		// if(!(count % 5)){
-		// 	if(selectedTeam == -1){
-		// 		controller.print(0,1,"Blue %f");
-		// 		//controller.print(0,0,"%f ", (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity())/2);
-		// 	}
+		if(!(count % 5)){
+			//controller.print(0,1,"Blue %f");
+			controller.print(0,0,"%f ", getFlywheelTarget());
+		}
 
 		// 	else if(selectedTeam == 1){
 		// 		controller.print(0,1,"Red %f");

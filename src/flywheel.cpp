@@ -55,6 +55,10 @@ void changeFlywheelTarget(double speed){
     f_target = speed;
 }
 
+double getFlywheelTarget(){
+    return f_target;
+}
+
 void flywheelPDF(){      
     f_curr_speed = (midFlywheel.get_actual_velocity() + outFlywheel.get_actual_velocity()) / 2;
 
