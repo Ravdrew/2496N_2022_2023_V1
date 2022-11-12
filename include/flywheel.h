@@ -4,7 +4,7 @@
 #define FLY_H_
 
 #define FLYWHEEL_SPEED_TARGET 380
-#define SINGLE_SPEED_TARGET 365
+#define SINGLE_SPEED_TARGET 373
 
 int sgn(double input);
 //void changeTBHTarget(float speed);
