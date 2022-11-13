@@ -244,8 +244,8 @@ void absturnTimed(float abstarget, int timer_amt, bool ask_slew, float slew_rate
 
 void shootDisks(int num){
     for(int i = 0; i<num; i++){
-        indexer.move_relative(ONE_DISK_ROTATION, 170);
-        pros::delay(1200);
+        indexer.move_relative(ONE_DISK_ROTATION, 110);
+        pros::delay(1400);
     }
 }
 

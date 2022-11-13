@@ -3,7 +3,7 @@
 
 #ifndef ROBOT_H_
 #define ROBOT_H_
-#define ONE_DISK_ROTATION 120
+#define ONE_DISK_ROTATION 121
 extern pros::Controller controller;
 extern pros::Motor leftFront; 
 extern pros::Motor leftMid;

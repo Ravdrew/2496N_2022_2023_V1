@@ -6,7 +6,7 @@
 #include <cmath> //keijay added this, it makes our code look cooler...
  
 void AWP(){
-    changeFlywheelTarget(545);
+    changeFlywheelTarget(590);
     pros::Task autoFlyControl(autonFlywheelPDF);
     intake.move(-60);
     timedMove(-50,150);
@@ -19,11 +19,11 @@ void AWP(){
     //pros::delay(200);
     absturn(-123, false);
     move(-1700, false, 0, 90, 2000);
-    intake.move(75);
+    intake.move(127);
     //pros::delay(100);
     move(-1300, false, 0, 50, 1800);
-    changeFlywheelTarget(472);
-    absturn(-28, false);
+    changeFlywheelTarget(500);
+    absturn(-25, false);
 
     //pros::delay(1000);
     shootDisks(3);
@@ -75,7 +75,7 @@ void rollerSide(){
 }
  
 void offSideRoller(){
-    changeFlywheelTarget(508);
+    changeFlywheelTarget(518);
     pros::Task autoFlyControl(autonFlywheelPDF);
     move(-1600);
     absturn(90);
@@ -83,10 +83,12 @@ void offSideRoller(){
     timedMove(-80,300);
     //pros::delay(50);
     move(330);
-    absturn(104);
-    shootDisks(2);
-    flywheelMove(0);
-    intake.move(0);
+    absturn(102);
+    shootDisks(3);
+    pros::delay(200);
+    //flywheelMove(0);
+    //intake.move(0);
+    //absturn(20);
 }
  
 void rollerOnly(){
