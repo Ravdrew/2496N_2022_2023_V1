@@ -1,6 +1,7 @@
 #include "main.h"
 #include "PID.h"
 #include "robot.h"
+#include "flywheel.h"
 #define STRAIGHT_KP 0.25 //0.39 0.5
 #define STRAIGHT_KI 0.15 //0.15
 #define STRAIGHT_KD 1.9

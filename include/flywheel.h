@@ -5,6 +5,7 @@
 
 #define FLYWHEEL_SPEED_TARGET 408
 #define SINGLE_SPEED_TARGET 398
+#define ONE_DISK_ROTATION 120
 
 int sgn(double input);
 //void changeTBHTarget(float speed);
