@@ -86,6 +86,14 @@ void offSideRoller(){
     absturn(102);
     shootDisks(3);
     pros::delay(200);
+    absturn(-140, false);
+    intake.move(127);
+    changeFlywheelTarget(500);
+    move(-2000, false, 0, 50, 2400);
+    absturn(145, false);
+    shootDisks(4);
+    
+    
     //flywheelMove(0);
     //intake.move(0);
     //absturn(20);
