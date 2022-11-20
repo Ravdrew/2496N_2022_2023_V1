@@ -16,14 +16,14 @@ void AWP(){
     move(330);
     changeFlywheelTarget(-5);
     intake.move(70);
-    //pros::delay(200);
+    pros::delay(400);
     absturn(-123, false);
     move(-1700, false, 0, 90, 2000);
     intake.move(127);
     //pros::delay(100);
     move(-1300, false, 0, 50, 1800);
-    changeFlywheelTarget(500);
-    absturn(-25, false);
+    changeFlywheelTarget(490);
+    absturn(-27, false);
 
     //pros::delay(1000);
     shootDisks(3);
@@ -75,32 +75,34 @@ void rollerSide(){
 }
  
 void offSideRoller(){
-    changeFlywheelTarget(510);
+    changeFlywheelTarget(540);
     pros::Task autoFlyControl(autonFlywheelPDF);
     move(-1600);
     absturn(90);
-    intake.move(-70);
-    timedMove(-127,300);
+    pros::delay(300);
+    intake.move(-90);
+    timedMove(-127,360);
     //pros::delay(50);
     move(330);
     intake.move(0);
-    absturn(102);
+    absturn(105);
     shootDisks(2);
-    pros::delay(200);
-    changeFlywheelTarget(-4);
-    pros::delay(400);
-    absturn(214, false);
+    /*pros::delay(200);
+    changeFlywheelTarget(-5);
+    pros::delay(250);
+    absturn(218, false);
     intake.move(127);
-    move(-3700, false, 0, 100, 3200);
-    changeFlywheelTarget(484);
+    move(-3300, false, 0, 100, 2000);
+    changeFlywheelTarget(495);
+    //changeFlywheelTarget(486);
     pros::delay(1000);
     absturn(137, false);
-    shootDisks(4);
+    shootDisks(3);
     
     
     //flywheelMove(0);
     //intake.move(0);
-    //absturn(20);
+    //absturn(20);*/
 }
  
 void rollerOnly(){

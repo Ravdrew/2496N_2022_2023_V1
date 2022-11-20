@@ -139,11 +139,11 @@ void move(float target, bool ask_slew, float slew_rate, float power_cap, float a
 
         chas_move(voltage - heading, voltage + heading); // (voltage - heading, voltage + heading)
         //std::cout << "error: " << abs(target - encoder_average) << std::endl;
-        if (abs(voltage)<0.2){
-            break;
-        }
-        // if (abs(target - encoder_average) <= 4) count++;
-        // if (count >= 23) break;
+        /*if (abs(voltage)<0.2){
+            count++;
+        }*/
+        if (abs(target - encoder_average) <= 5) count++;
+        if (count >= 10) break;
 
         pros::delay(10);
     }
@@ -204,15 +204,8 @@ void absturn(float abstarget, bool ask_slew, float slew_rate, float power_cap){
             controller.print(0,0, "%f", printPos);
         }
         printTimer += 1;
-        // if (abs(abstarget - position) <= 0.8) count++;
-        // if (count >= 50) break;
-
-         if (abs(voltage)<13){
-            count++;
-        }
-        if(count >= 5){
-            break;
-        }
+        if (abs(abstarget - position) <= 1) count++;
+        if (count >= 10) break;
 
         pros::delay(10);
     }
@@ -256,7 +249,7 @@ void absturnTimed(float abstarget, int timer_amt, bool ask_slew, float slew_rate
 void shootDisks(int num){
     for(int i = 0; i<num; i++){
         indexer.move_relative(ONE_DISK_ROTATION, 110);
-        pros::delay(1000);
+        pros::delay(1200);
     }
 }
 

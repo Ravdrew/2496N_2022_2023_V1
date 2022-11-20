@@ -123,22 +123,23 @@ void competition_initialize() {
 
 void autonomous() {
 	start_heading = imu.get_rotation();
-	switch(selectedAuto) {
-		case 0:
-			noAuton();
-			break;
-		case 1:
-			AWP();
-			break;
-		case 2:
-			rollerSide();
-			break;
-		case 3:
-			offSideRoller();
-			break;
-		default:
-			noAuton();
-	}
+	offSideRoller();
+	// switch(selectedAuto) {
+	// 	case 0:
+	// 		noAuton();
+	// 		break;
+	// 	case 1:
+	// 		AWP();
+	// 		break;
+	// 	case 2:
+	// 		rollerSide();
+	// 		break;
+	// 	case 3:
+	// 		offSideRoller();
+	// 		break;
+	// 	default:
+	// 		noAuton();
+	// }
 	
 }
 
@@ -170,10 +171,11 @@ void tripleShot(void* param){
 	rollerToggle = true;
 	intake.move(127);
 	changeFlywheelTarget(600);
-	indexer.move_relative(ONE_DISK_ROTATION*2, 120);
-	pros::delay(500);
-	indexer.move_relative(ONE_DISK_ROTATION, 170);
-	pros::delay(200);
+	indexer.move_relative(ONE_DISK_ROTATION*2, 110);
+	pros::delay(460);
+	/*pros::delay(330);
+	indexer.move_relative(ONE_DISK_ROTATION, 130);
+	pros::delay(250);*/
 	changeFlywheelTarget(FLYWHEEL_SPEED_TARGET);
 	indexToggle = false;
 	intake.move(0);
