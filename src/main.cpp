@@ -172,7 +172,9 @@ void tripleShot(void* param){
 	intake.move(127);
 	changeFlywheelTarget(600);
 	indexer.move_relative(ONE_DISK_ROTATION*2, 110);
-	pros::delay(460);
+	pros::delay(450);
+	indexer.move_relative(ONE_DISK_ROTATION, 170);
+	pros::delay(250);
 	/*pros::delay(330);
 	indexer.move_relative(ONE_DISK_ROTATION, 130);
 	pros::delay(250);*/
@@ -301,7 +303,7 @@ void opcontrol() {
 			detectedTime = 0;
 		}
 
-		if(detectedTime > 40){
+		if(detectedTime > 50){
 			indexToggle = true;
 		}
 		//indexToggle = true;
