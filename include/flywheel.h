@@ -3,8 +3,8 @@
 #ifndef FLY_H_
 #define FLY_H_
 
-#define FLYWHEEL_SPEED_TARGET 380
-#define SINGLE_SPEED_TARGET 410
+#define FLYWHEEL_SPEED_TARGET 365
+#define SINGLE_SPEED_TARGET 380
 #define ONE_DISK_ROTATION 120
 
 int sgn(double input);
